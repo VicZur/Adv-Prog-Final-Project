@@ -36,6 +36,7 @@
     <Content Include="templates\index.html" />
     <Content Include="templates\additem.html" />
     <Content Include="templates\viewitem.html" />
+    <Content Include="templates\deleteitem.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

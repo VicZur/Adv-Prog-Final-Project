@@ -88,14 +88,16 @@ class Supplier(db.Model):
 
 class Item(db.Model):
     item_id  = db.Column(db.Integer, primary_key=True)
-    name  = db.Column(db.String(50), nullable=False, unique=True)
+    name  = db.Column(db.String(50), nullable=False) #, unique=True)
     description = db.Column(db.Text, nullable=True)
     unit_cost  = db.Column(db.Numeric, nullable=False)
     sale_price  = db.Column(db.Numeric, nullable=False)
     units_in_stock  = db.Column(db.Integer, nullable=False)
-    expiration_date  = db.Column(db.Date, nullable=True) #put some kind of batch table to handle this?
-    supplier_id = db.Column(db.Integer, db.ForeignKey(Supplier.supplier_id), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey(Category.category_id), nullable=False)
+    expiration_date  = db.Column(db.String, nullable=True) #put some kind of batch table to handle this?
+    supplier_id = db.Column(db.Integer, nullable=False)
+   # supplier_id = db.Column(db.Integer, db.ForeignKey(Supplier.supplier_id), nullable=False)
+   # category_id = db.Column(db.Integer, db.ForeignKey(Category.category_id), nullable=False)
+    category_id = db.Column(db.Integer, nullable=False)
 
     def __init__(self, item_id, name, description, unit_cost, sale_price, units_in_stock, expiration_date, supplier_id, category_id):
         self.item_id = item_id
@@ -109,4 +111,4 @@ class Item(db.Model):
         self.category_id = category_id
 
 
-db.create_all()
+#db.create_all()
