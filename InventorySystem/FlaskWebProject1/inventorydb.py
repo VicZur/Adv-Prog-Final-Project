@@ -12,8 +12,8 @@ class Employee(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     pps_number = db.Column(db.String(9), nullable=False)
-    dob = db.Column(db.Date, nullable=False)
-    hire_date = db.Column(db.Date, nullable=False)
+    dob = db.Column(db.String, nullable=False)
+    hire_date = db.Column(db.String, nullable=False)
 
     def __init__(self, emp_id, first_name, last_name, pps_number, dob, hire_date):
         self.emp_id = emp_id

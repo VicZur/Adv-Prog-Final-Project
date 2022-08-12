@@ -16,6 +16,14 @@ wsgi_app = app.wsgi_app
 def index():
     return render_template('index.html')
 
+
+
+
+
+
+
+
+
 @app.route('/additem', methods=['GET', 'POST'])
 def additem():
 
@@ -24,7 +32,6 @@ def additem():
     #     flash('Please enter all the fields', 'error')
     # else:
 
-        itemdate = request.form['expiration_date']
         item = inventorydb.Item(int(request.form['item_id']), request.form['name'], request.form['description'], int(request.form['unit_cost']), int(request.form['sale_price']), int(request.form['units_in_stock']), request.form['expiration_date'], int(request.form['supplier_id']), int(request.form['category_id']))
 
 
@@ -53,6 +60,62 @@ def deleteitem():
 
     return render_template('deleteitem.html')
 
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/addemployee', methods=['GET', 'POST'])
+def addemployee():
+
+    if request.method == 'POST':
+    #  if not request.form['name'] or not request.form['salary'] or not request.form['age']:
+    #     flash('Please enter all the fields', 'error')
+    # else:
+
+        employee = inventorydb.Employee(int(request.form['emp_id']), request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'])
+
+        inventorydb.db.session.add(employee)
+        inventorydb.db.session.commit()
+  #      flash('Record was successfully added')
+
+    return render_template('addemployee.html')
+
+
+@app.route('/viewemployee', methods=['GET', 'POST'])
+def viewemployee():
+
+    return render_template('viewemployee.html', query=inventorydb.Employee.query.all())
+
+
+@app.route('/deleteemployee', methods=['GET', 'POST'])
+def deleteemployee():
+
+    if request.method == 'POST':
+        id = request.form["emp_id"]
+    
+        inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
+        inventorydb.db.session.commit()
+
+    return render_template('deleteemployee.html')
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     import os
     HOST = os.environ.get('SERVER_HOST', 'localhost')
@@ -61,7 +124,6 @@ if __name__ == '__main__':
     except ValueError:
         PORT = 5555
     app.run(HOST, PORT)
-
 
 
 
