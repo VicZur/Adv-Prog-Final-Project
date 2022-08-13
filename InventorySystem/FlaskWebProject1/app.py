@@ -54,11 +54,54 @@ def deleteitem():
 
     if request.method == 'POST':
         id = request.form["item_id"]
-    
+ 
         inventorydb.db.session.delete(inventorydb.Item.query.filter_by(item_id=id).one())
         inventorydb.db.session.commit()
+        return render_template('viewitem.html', query=inventorydb.Item.query.all())
 
     return render_template('deleteitem.html')
+
+
+@app.route('/searchitem', methods=['GET', 'POST'])
+def searchitem():
+
+    if request.method == 'POST':
+        id = request.form["item_id"]
+        return render_template('updateitem.html', query=inventorydb.Item.query.get(id))#filter_by(item_id=id).one())
+
+    return render_template('searchitem.html')
+
+
+
+@app.route('/updateitem', methods=['GET', 'POST'])
+def updateitem():
+    if request.method == 'POST':
+
+        #item=inventorydb.Item.query.get(5)
+
+        id = request.form["item_id"]
+        item=inventorydb.Item.query.get(id)
+        
+        item.name = request.form['name']
+        item.description = request.form['description']
+        item.unit_cost = int(request.form['unit_cost'])
+        item.sale_price = int(request.form['sale_price'])
+        item.units_in_stock = int(request.form['units_in_stock'])
+        item.expiration_date = request.form['expiration_date']
+        item.supplier_id = int(request.form['supplier_id'])
+        item.category_id = int(request.form['category_id'])
+
+        inventorydb.db.session.commit()
+
+        return render_template('viewitem.html')
+
+    return render_template('updateitem.html')
+
+
+
+
+
+
 
 
 

@@ -3,14 +3,9 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>View Item</title>
+    <title></title>
 </head>
 <body>
-    <h3>Item List</h3>
-
-    <a href="/searchitem">Update Item</a>
-    <a href="/deleteitem">Delete Item</a>
-
 
     <table border="2" cellpadding="5">
         <thead>
@@ -28,7 +23,6 @@
         </thead>
 
         <tbody>
-            {% for item in query %}
             <tr>
                 <td>{{ item.item_id }}</td>
                 <td>{{ item.name }}</td>
@@ -40,8 +34,6 @@
                 <td>{{ item.supplier_id }}</td>
                 <td>{{ item.category_id }}</td>
             </tr>
-            {% endfor %}
-
         </tbody>
     </table>
 

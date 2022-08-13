@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Item</title>
+</head>
+<body>
+
+    <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
+        source for form & table together-->
+
+    <form action="/updateitem" method="post">
+        <table border="2" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Item Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Unit Cost</th>
+                    <th>Sale Price</th>
+                    <th>Units In Stock</th>
+                    <th>Expriation Date</th>
+                    <th>Supplier ID</th>
+                    <th>Category ID</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="item_id" value="{{ query.item_id }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="name" value="{{ query.name }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="description" value="{{ query.description }}" />
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="any" name="unit_cost" value="{{ query.unit_cost }}" />
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="any" name="sale_price" value="{{ query.sale_price }}" />
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="1" name="units_in_stock" value="{{ query.units_in_stock }}" />
+                    </td>
+                    <td>
+                        <input type="date" name="expiration_date" value="{{ query.expiration_date }}" />
+                    </td>
+                    <td>
+                        <input type="number" name="supplier_id" value="{{ query.supplier_id }}" />
+                    </td>
+                    <td>
+                        <input type="number" name="category_id" value="{{ query.category_id }}" />
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+
+</body>
+</html>

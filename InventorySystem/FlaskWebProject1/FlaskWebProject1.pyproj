@@ -40,6 +40,8 @@
     <Content Include="templates\addemployee.html" />
     <Content Include="templates\viewemployee.html" />
     <Content Include="templates\deleteemployee.html" />
+    <Content Include="templates\updateitem.html" />
+    <Content Include="templates\searchitem.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />
