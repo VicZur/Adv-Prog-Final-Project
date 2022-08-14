@@ -30,6 +30,9 @@
     <Compile Include="inventorydb.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="createtestdata.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
@@ -42,6 +45,8 @@
     <Content Include="templates\deleteemployee.html" />
     <Content Include="templates\updateitem.html" />
     <Content Include="templates\searchitem.html" />
+    <Content Include="templates\viewtitles.html" />
+    <Content Include="templates\viewemployeetitles.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

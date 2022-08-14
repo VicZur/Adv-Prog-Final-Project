@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h3>Titles</h3>
+
+    <table border="2" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Department Number</th>
+                <th>Access Level</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for title in query %}
+            <tr>
+                <td>{{ title.job_title }}</td>
+                <td>{{ title.department_num }}</td>
+                <td>{{ title.access_level }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</body>
+</html>

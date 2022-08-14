@@ -16,11 +16,12 @@
                 <th>PPS Number</th>
                 <th>Date of Birth</th>
                 <th>Hire Date</th>
+                <th>Job Title</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for employee in query %}
+            {% for employee in employees %}
             <tr>
                 <td>{{ employee.emp_id }}</td>
                 <td>{{ employee.first_name }}</td>
@@ -28,6 +29,7 @@
                 <td>{{ employee.pps_number }}</td>
                 <td>{{ employee.dob }}</td>
                 <td>{{ employee.hire_date }}</td>
+                <td>{{ employee.title }}</td>
             </tr>
             {% endfor %}
         </tbody>

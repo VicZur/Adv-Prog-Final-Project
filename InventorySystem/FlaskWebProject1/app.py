@@ -3,6 +3,7 @@ from inventorydb import db, app
 from flask import Flask, request, flash, url_for, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import createtestdata
 
 if __name__ == '__main__':
     db.create_all
@@ -84,8 +85,8 @@ def updateitem():
         
         item.name = request.form['name']
         item.description = request.form['description']
-        item.unit_cost = int(request.form['unit_cost'])
-        item.sale_price = int(request.form['sale_price'])
+        item.unit_cost = (request.form['unit_cost'])
+        item.sale_price = (request.form['sale_price'])
         item.units_in_stock = int(request.form['units_in_stock'])
         item.expiration_date = request.form['expiration_date']
         item.supplier_id = int(request.form['supplier_id'])
@@ -93,7 +94,7 @@ def updateitem():
 
         inventorydb.db.session.commit()
 
-        return render_template('viewitem.html')
+        return redirect(url_for('viewitem'))
 
     return render_template('updateitem.html')
 
@@ -117,44 +118,59 @@ def updateitem():
 @app.route('/addemployee', methods=['GET', 'POST'])
 def addemployee():
 
+
+
     if request.method == 'POST':
     #  if not request.form['name'] or not request.form['salary'] or not request.form['age']:
     #     flash('Please enter all the fields', 'error')
     # else:
-
-        employee = inventorydb.Employee(int(request.form['emp_id']), request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'])
-
+        
+        employee = inventorydb.Employee(request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'])
         inventorydb.db.session.add(employee)
+        inventorydb.db.session.flush() #flush() use info taken from https://stackoverflow.com/questions/27736122/how-to-insert-into-multiple-tables-to-mysql-with-sqlalchemy
+         
+        employeetitle = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], request.form['hire_date'], '')
+        inventorydb.db.session.add(employeetitle)
+
         inventorydb.db.session.commit()
   #      flash('Record was successfully added')
 
-    return render_template('addemployee.html')
+    return render_template('addemployee.html', jobtitles=inventorydb.Title.query.all())
 
 
 @app.route('/viewemployee', methods=['GET', 'POST'])
 def viewemployee():
 
-    return render_template('viewemployee.html', query=inventorydb.Employee.query.all())
-
+    return render_template('viewemployee.html', employees=inventorydb.Employee.query.all())
+    #return render_template('viewemployee.html', employees=inventorydb.Employee.query.join(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
+                                                                                          
 
 @app.route('/deleteemployee', methods=['GET', 'POST'])
 def deleteemployee():
 
     if request.method == 'POST':
         id = request.form["emp_id"]
-    
-        inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
-        inventorydb.db.session.commit()
+
+        try:
+            inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
+            inventorydb.db.session.commit()
+        except:
+            #NEED TO ADD AN ERROR MESSAGE HERE
+            return render_template('deleteemployee.html')
 
     return render_template('deleteemployee.html')
 
 
 
 
+@app.route('/viewtitles', methods=['GET', 'POST'])
+def viewtitles():
+    return render_template('viewtitles.html', query=inventorydb.Title.query.all())
 
 
-
-
+@app.route('/viewemployeetitles', methods=['GET', 'POST'])
+def viewemployeetitles():
+    return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
 
 
 
@@ -166,7 +182,8 @@ if __name__ == '__main__':
         PORT = int(os.environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    app.run(HOST, PORT)
+    app.run(HOST, PORT) #debug=True)
+ 
 
 
 
