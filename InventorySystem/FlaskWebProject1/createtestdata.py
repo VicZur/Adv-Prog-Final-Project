@@ -2,16 +2,48 @@ import inventorydb
 from inventorydb import db, app
 
 
-def create_test_title():
-    
-    title1 = inventorydb.Title('Server','100', '1') 
-    title2 = inventorydb.Title('Bartender','100', '1')
-    title3 = inventorydb.Title('Supervisor','100', '2')
-    title4 = inventorydb.Title('Bar Manager','100', '2')
-    title5 = inventorydb.Title('Admin','300', '3')
-    title6 = inventorydb.Title('Accounts','200', '2')
+def create_test_suppliers():
 
-    titles = [title1, title2, title3, title4, title5, title6]
+    suppliers = [inventorydb.Supplier('Test Supplier', '1234567890', 'testsupplier@supplies.ie', '')
+                , inventorydb.Supplier('Supplies R Us', '555-0123-5555', 'supplies@supplies.ie', 'Contact by phone only')
+                , inventorydb.Supplier('RestaurantStuff', '9876543210', 'reststuff@stuff.ie', '')]
+
+    for supplier in suppliers:
+        if not inventorydb.Supplier.query.filter_by(name=supplier).one(): #check for duplication of name for testing purposes only to ensure not continuously adding the same suppliers every time program is run
+            inventorydb.db.session.add(supplier)
+
+    inventorydb.db.session.commit()
+    
+
+def create_test_categories():
+
+    categories = [inventorydb.Category('Beer Draft', 'Alcoholic beer by keg')
+                 , inventorydb.Category('Beer Btl', 'Alcoholic beer in bottles')
+                 , inventorydb.Category('Misc. Draft', 'Non-beer items by keg')
+                 , inventorydb.Category('Wine', 'Wine bottles any size')
+                 , inventorydb.Category('Misc Alc Btls', 'Other bottled Alcoholic beverage')
+                 , inventorydb.Category('Non-alc beer', 'Non-alcoholic beer in btl or keg')
+                 , inventorydb.Category('Soft drink btl', 'Bottles of juice, coke, sprite, to be sold by bottle')
+                 , inventorydb.Category('Soft drink bulk', 'Non-alch drinks in larger bottles, not sold individually')
+                 , inventorydb.Category('Fruit', 'Fresh Fruit')
+                 , inventorydb.Category('Syrups', 'Any syrups made or bought')
+                 , inventorydb.Category('Garnish', 'Any item specifically used as garnish')
+                 , inventorydb.Category('Misc', 'Any other item in stock')]
+
+    for cat in categories:
+        inventorydb.db.session.add(cat)
+
+    inventorydb.db.session.commit()
+
+
+def create_test_title():
+
+    titles = [inventorydb.Title('Server','100', '1') 
+             , inventorydb.Title('Bartender','100', '1')
+             , inventorydb.Title('Supervisor','100', '2')
+             , inventorydb.Title('Bar Manager','100', '2')
+             , inventorydb.Title('Admin','300', '3')
+             , inventorydb.Title('Accounts','200', '2')]
 
     for title in titles:
         if not inventorydb.Title.query.get(title.job_title):
@@ -39,4 +71,5 @@ def test_job_title():
 create_test_title()
 #create_test_employee()
 #test_job_title()
-
+#create_test_suppliers()
+#create_test_categories()

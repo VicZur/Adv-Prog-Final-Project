@@ -67,6 +67,7 @@ def deleteitem():
 def searchitem():
 
     if request.method == 'POST':
+
         id = request.form["item_id"]
         return render_template('updateitem.html', query=inventorydb.Item.query.get(id))#filter_by(item_id=id).one())
 
@@ -143,7 +144,8 @@ def viewemployee():
 
     return render_template('viewemployee.html', employees=inventorydb.Employee.query.all())
     #return render_template('viewemployee.html', employees=inventorydb.Employee.query.join(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
-                                                                                          
+    #return render_template('viewemployee.html', employees=inventorydb.db.session.query(inventorydb.Employee, inventorydb.EmployeeTitle.emp_job_title, inventorydb.Title.access_level).join(inventorydb.Employee).join(inventorydb.EmployeeTitle).join(inventorydb.Title).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
+    
 
 @app.route('/deleteemployee', methods=['GET', 'POST'])
 def deleteemployee():
@@ -171,6 +173,16 @@ def viewtitles():
 @app.route('/viewemployeetitles', methods=['GET', 'POST'])
 def viewemployeetitles():
     return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
+
+
+
+@app.route('/viewsuppliers', methods=['GET', 'POST'])
+def viewsuppliers():
+    return render_template('viewsuppliers.html', query=inventorydb.Supplier.query.all())
+
+@app.route('/viewcategories', methods=['GET', 'POST'])
+def viewcategories():
+    return render_template('viewcategories.html', query=inventorydb.Category.query.all())
 
 
 

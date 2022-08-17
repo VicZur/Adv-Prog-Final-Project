@@ -47,6 +47,8 @@
     <Content Include="templates\searchitem.html" />
     <Content Include="templates\viewtitles.html" />
     <Content Include="templates\viewemployeetitles.html" />
+    <Content Include="templates\viewsuppliers.html" />
+    <Content Include="templates\viewcategories.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

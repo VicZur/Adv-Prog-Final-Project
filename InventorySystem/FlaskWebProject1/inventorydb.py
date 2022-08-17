@@ -21,6 +21,7 @@ class Employee(db.Model):
     hire_date = db.Column(db.String, nullable=False)
     title = db.relationship("EmployeeTitle", backref="employee_job_title", lazy="joined")
 
+
     def __init__(self, first_name, last_name, pps_number, dob, hire_date):
         self.first_name = first_name
         self.last_name = last_name
@@ -30,28 +31,17 @@ class Employee(db.Model):
 
     #need username & password?
 
-class Department(db.Model):
-    department_num = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    department_name = db.Column(db.String(50), nullable=False)
-    department_phone = db.Column(db.String(20), nullable=False)
-    title = db.relationship("Title", backref="jobtitle", lazy="joined")
-
-    def __init__(self, department_name, department_phone):
-        self.department_name = department_name
-        self.department_phone = department_phone
 
 class Title(db.Model):
     job_title = db.Column(db.String(50), primary_key=True)
-    department_num = db.Column(db.Integer, db.ForeignKey(Department.department_num), nullable=False)
     access_level = db.Column(db.Integer, nullable=False)
-    department = db.relationship("Department", back_populates ="title")
+    emp_title = db.relationship("EmployeeTitle", backref="emp_title", lazy="joined")
 
     def __init__ (self, job_title, department_num, access_level):
         self.job_title = job_title
         self.department_num = department_num
         self.access_level = access_level
 
-   
 
 class EmployeeTitle(db.Model):
 
@@ -62,6 +52,7 @@ class EmployeeTitle(db.Model):
     start_date = db.Column(db.String, nullable=False)
     end_date = db.Column(db.String, nullable=True)
     employee = db.relationship("Employee", back_populates = "title")
+    titlejoin = db.relationship("Title", back_populates = "emp_title")
 
 
     def __init__(self, emp_title_id, emp_job_title, start_date, end_date):
@@ -89,7 +80,7 @@ class Supplier(db.Model):
     email = db.Column(db.String(50), nullable=False)
     comments = db.Column(db.String(200), nullable=True)
 
-    def __init__(self, supplier_id, name, phone, email, comments):
+    def __init__(self, name, phone, email, comments):
         self.name = name
         self.phone = phone
         self.email = email
