@@ -9,8 +9,8 @@ def create_test_suppliers():
                 , inventorydb.Supplier('RestaurantStuff', '9876543210', 'reststuff@stuff.ie', '')]
 
     for supplier in suppliers:
-        if not inventorydb.Supplier.query.filter_by(name=supplier).one(): #check for duplication of name for testing purposes only to ensure not continuously adding the same suppliers every time program is run
-            inventorydb.db.session.add(supplier)
+        #if not inventorydb.Supplier.query.filter_by(name=supplier).one(): #check for duplication of name for testing purposes only to ensure not continuously adding the same suppliers every time program is run
+        inventorydb.db.session.add(supplier)
 
     inventorydb.db.session.commit()
     
@@ -38,12 +38,12 @@ def create_test_categories():
 
 def create_test_title():
 
-    titles = [inventorydb.Title('Server','100', '1') 
-             , inventorydb.Title('Bartender','100', '1')
-             , inventorydb.Title('Supervisor','100', '2')
-             , inventorydb.Title('Bar Manager','100', '2')
-             , inventorydb.Title('Admin','300', '3')
-             , inventorydb.Title('Accounts','200', '2')]
+    titles = [inventorydb.Title('Server','Floor', '1') 
+             , inventorydb.Title('Bartender','Floor', '1')
+             , inventorydb.Title('Supervisor','Floor', '2')
+             , inventorydb.Title('Bar Manager','Floor', '2')
+             , inventorydb.Title('Admin','Admin', '3')
+             , inventorydb.Title('Payroll Specialist','Accounting', '2')]
 
     for title in titles:
         if not inventorydb.Title.query.get(title.job_title):
@@ -68,7 +68,8 @@ def test_job_title():
     inventorydb.db.session.commit()
 
 
-create_test_title()
+
+#create_test_title()
 #create_test_employee()
 #test_job_title()
 #create_test_suppliers()

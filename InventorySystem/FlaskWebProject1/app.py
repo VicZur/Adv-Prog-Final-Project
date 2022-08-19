@@ -9,6 +9,7 @@ if __name__ == '__main__':
     db.create_all
     db.init_app(app)
 
+
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
 
@@ -170,6 +171,19 @@ def viewtitles():
     return render_template('viewtitles.html', query=inventorydb.Title.query.all())
 
 
+
+@app.route('/addtitle', methods=['GET', 'POST'])
+def addtitle():
+    if request.method =='POST':
+
+        title=inventorydb.Title(request.form['job_title'], request.form['department'], request.form['access_level'])
+        inventorydb.db.session.add(title)
+        inventorydb.db.session.commit()
+    return render_template('addtitle.html')
+
+
+
+
 @app.route('/viewemployeetitles', methods=['GET', 'POST'])
 def viewemployeetitles():
     return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
@@ -180,9 +194,38 @@ def viewemployeetitles():
 def viewsuppliers():
     return render_template('viewsuppliers.html', query=inventorydb.Supplier.query.all())
 
+
+
+
+
+@app.route('/addsupplier', methods=['GET', 'POST'])
+def addsupplier():
+    if request.method == 'POST':
+
+        supplier = inventorydb.Supplier(request.form['name'], request.form['phone'], request.form['email'], request.form['comments'])
+        inventorydb.db.session.add(supplier)
+        inventorydb.db.session.commit()
+
+    return render_template('addsupplier.html')
+
+
+
 @app.route('/viewcategories', methods=['GET', 'POST'])
 def viewcategories():
     return render_template('viewcategories.html', query=inventorydb.Category.query.all())
+
+
+
+@app.route('/addcategory', methods=['GET', 'POST'])
+def adcategoryr():
+    if request.method == 'POST':
+
+        category = inventorydb.Category(request.form['name'], request.form['description'])
+        inventorydb.db.session.add(category)
+        inventorydb.db.session.commit()
+
+    return render_template('addcategory.html')
+
 
 
 

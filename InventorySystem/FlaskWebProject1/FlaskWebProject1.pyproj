@@ -49,6 +49,9 @@
     <Content Include="templates\viewemployeetitles.html" />
     <Content Include="templates\viewsuppliers.html" />
     <Content Include="templates\viewcategories.html" />
+    <Content Include="templates\addsupplier.html" />
+    <Content Include="templates\addcategory.html" />
+    <Content Include="templates\addtitle.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

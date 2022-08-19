@@ -32,14 +32,17 @@ class Employee(db.Model):
     #need username & password?
 
 
+
 class Title(db.Model):
+
     job_title = db.Column(db.String(50), primary_key=True)
+    department = db.Column(db.String(50), nullable=False)
     access_level = db.Column(db.Integer, nullable=False)
     emp_title = db.relationship("EmployeeTitle", backref="emp_title", lazy="joined")
 
-    def __init__ (self, job_title, department_num, access_level):
+    def __init__ (self, job_title, department, access_level):
         self.job_title = job_title
-        self.department_num = department_num
+        self.department = department
         self.access_level = access_level
 
 
@@ -108,3 +111,6 @@ class Item(db.Model):
         self.expiration_date = expiration_date
         self.supplier_id = supplier_id
         self.category_id = category_id
+       
+
+db.create_all()
