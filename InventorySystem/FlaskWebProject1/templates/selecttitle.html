@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Select Title</title>
+</head>
+<body>
+    <h2>Select Title</h2>
+
+    <form action="/selecttitle" method="post">
+
+        <label for="job_title">Job Title</label><br />
+        <select name="job_title" placeholder="Job Title">
+
+            {% for title in titles %}
+            <option value="{{ title.job_title }}">{{ title.job_title }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

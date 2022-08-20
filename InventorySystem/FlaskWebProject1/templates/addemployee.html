@@ -27,16 +27,12 @@
         <input type="date" name="hire_date" placeholder="Hire Date" /> <br />
 
         <label for="job_title">Job Title</label><br />
-        <select name="job_title">
+        <select name="job_title" placeholder="Job Title">
 
             {% for title in jobtitles %}
             <option value="{{ title.job_title }}">{{ title.job_title }}</option>
-
-            <!--<option value="Server">Server</option>-->
-            <!--<option value="Bartender">Bartender</option>-->
             {% endfor %}
         </select>
-        <!--<input type="text" name="job_title" placeholder="Job Title" />-->
 
         <input type="submit" value="Submit" />
 

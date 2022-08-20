@@ -9,8 +9,6 @@
     <h2>Add Item Page</h2>
 
     <form action="{{ request.path }}" method="post">
-        <label for="item_id">Item ID</label><br />
-        <input type="number" name="item_id" placeholder="Item ID" /><br />
 
         <label for="name">Name</label><br />
         <input type="text" name="name" placeholder="Name" /><br />
@@ -31,13 +29,25 @@
         <input type="date" name="expiration_date" placeholder="Expiration Date" /><br />
 
         <label for="supplier_id">Supplier ID</label><br />
-        <input type="number" name="supplier_id" placeholder="Supplier ID" /><br />
+        <select name="supplier_id" placeholder="Supplier ID">
+            <option value="" hidden="hidden">Select ID</option>
+            {% for supplier in suppliers %}
+            <option value="{{ supplier.supplier_id }}">{{ supplier.supplier_id }} {{ supplier.name }}</option>
+            {% endfor %}
+
+        </select><br />
 
         <label for="category_id">Category ID</label><br />
-        <input type="number" name="category_id" placeholder="Category ID" /><br />
+        <select name="category_id" placeholder="Category ID">
+            <option value="" hidden="hidden">Select ID</option>
+            {% for category in categories %}
+            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+            {% endfor %}
+
+        </select><br />
 
         <input type="submit" value="Submit" />
 
     </form>
 </body>
-</html> 1
+</html>

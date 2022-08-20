@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Select Supplier</title>
+</head>
+<body>
+    <h2>Select Supplier</h2>
+
+    <form action="/selectsupplier" method="post">
+
+        <label for="supplier_id">Supplier</label><br />
+        <select name="supplier_id" placeholder="Supplier">
+
+            {% for supplier in suppliers %}
+            <option value="{{ supplier.supplier_id }}">{{ supplier.supplier_id }} {{ supplier.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

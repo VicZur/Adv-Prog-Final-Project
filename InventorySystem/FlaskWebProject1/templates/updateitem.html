@@ -6,7 +6,7 @@
     <title>Update Item</title>
 </head>
 <body>
-
+    <h3>Update Item</h3>
     <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
         source for form & table together-->
 
@@ -50,12 +50,25 @@
                         <input type="date" name="expiration_date" value="{{ query.expiration_date }}" />
                     </td>
                     <td>
-                        <input type="number" name="supplier_id" value="{{ query.supplier_id }}" />
+                        <select name="supplier_id" placeholder="Supplier ID">
+                            <option value="{{ query.supplier_id }}" hidden="hidden">{{ query.supplier_id }}</option>
+                            {% for supplier in suppliers %}
+                            <option value="{{ supplier.supplier_id }}">{{ supplier.supplier_id }} {{ supplier.name }}</option>
+                            {% endfor %}
+
+                        </select><br />
                     </td>
                     <td>
-                        <input type="number" name="category_id" value="{{ query.category_id }}" />
-                    </td>
+                        <select name="category_id" placeholder="Category ID">
+                            <option value="{{ query.category_id }}" hidden="hidden">{{ query.category_id }}</option>
+                            {% for category in categories %}
+                            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+                            {% endfor %}
 
+                        </select><br />
+
+                    </td>
+                    
                 </tr>
 
             </tbody>

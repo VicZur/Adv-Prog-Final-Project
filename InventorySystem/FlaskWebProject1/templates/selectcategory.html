@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Select Category</title>
+</head>
+<body>
+    <h2>Select Category</h2>
+
+    <form action="/selectcategory" method="post">
+
+        <label for="category_id">Category</label><br />
+        <select name="category_id" placeholder="Category">
+
+            {% for category in categories %}
+            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

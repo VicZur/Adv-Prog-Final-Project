@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Category</title>
+</head>
+<body>
+    <h3>Update Category</h3>
+    <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
+        source for form & table together-->
+
+    <form action="/updatecategory" method="post">
+        <table border="2" cellpadding="5">
+            <thead>
+
+                <tr>
+                    <th>Category Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="category_id" value="{{ query.category_id }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="name" value="{{ query.name }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="description" value="{{ query.description }}" />
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

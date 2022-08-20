@@ -34,14 +34,15 @@ def additem():
     #     flash('Please enter all the fields', 'error')
     # else:
 
-        item = inventorydb.Item(int(request.form['item_id']), request.form['name'], request.form['description'], int(request.form['unit_cost']), int(request.form['sale_price']), int(request.form['units_in_stock']), request.form['expiration_date'], int(request.form['supplier_id']), int(request.form['category_id']))
+        item = inventorydb.Item(request.form['name'], request.form['description'], int(request.form['unit_cost']), int(request.form['sale_price']), int(request.form['units_in_stock']), request.form['expiration_date'], int(request.form['supplier_id']), int(request.form['category_id']))
 
 
         inventorydb.db.session.add(item)
         inventorydb.db.session.commit()
   #      flash('Record was successfully added')
 
-    return render_template('additem.html')
+    return render_template('additem.html', suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
+
 
 
 
@@ -64,15 +65,15 @@ def deleteitem():
     return render_template('deleteitem.html')
 
 
-@app.route('/searchitem', methods=['GET', 'POST'])
-def searchitem():
+@app.route('/selectitem', methods=['GET', 'POST'])
+def selectitem():
 
     if request.method == 'POST':
 
         id = request.form["item_id"]
-        return render_template('updateitem.html', query=inventorydb.Item.query.get(id))#filter_by(item_id=id).one())
+        return render_template('updateitem.html', query=inventorydb.Item.query.get(id), suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
 
-    return render_template('searchitem.html')
+    return render_template('selectitem.html', items=inventorydb.Item.query.all())
 
 
 
@@ -148,6 +149,38 @@ def viewemployee():
     #return render_template('viewemployee.html', employees=inventorydb.db.session.query(inventorydb.Employee, inventorydb.EmployeeTitle.emp_job_title, inventorydb.Title.access_level).join(inventorydb.Employee).join(inventorydb.EmployeeTitle).join(inventorydb.Title).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
     
 
+@app.route('/selectemployee', methods=['GET', 'POST'])
+def selectemployee():
+
+    if request.method == 'POST':
+
+        id = request.form["emp_id"]
+        return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id), titles=inventorydb.Title.query.all())
+
+    return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
+
+
+@app.route('/updateemployee', methods=['GET', 'POST'])
+def updateemployee():
+    if request.method == 'POST':
+
+        id = request.form["emp_id"]
+        employee=inventorydb.Employee.query.get(id)
+        
+        employee.first_name = request.form['first_name']
+        employee.last_name = request.form['last_name']
+        employee.pps_number = (request.form['pps_number'])
+        employee.dob = (request.form['dob'])
+        employee.hire_date = (request.form['hire_date'])
+        employee.title = request.form['title']
+
+        inventorydb.db.session.commit()
+
+        return redirect(url_for('viewemployee'))
+
+    return render_template('updateemployee.html')
+
+
 @app.route('/deleteemployee', methods=['GET', 'POST'])
 def deleteemployee():
 
@@ -166,6 +199,8 @@ def deleteemployee():
 
 
 
+
+
 @app.route('/viewtitles', methods=['GET', 'POST'])
 def viewtitles():
     return render_template('viewtitles.html', query=inventorydb.Title.query.all())
@@ -180,6 +215,61 @@ def addtitle():
         inventorydb.db.session.add(title)
         inventorydb.db.session.commit()
     return render_template('addtitle.html')
+
+
+@app.route('/selecttitle', methods=['GET', 'POST'])
+def selecttitle():
+
+    if request.method == 'POST':
+
+        id = request.form["job_title"]
+        return render_template('updatetitle.html', query=inventorydb.Title.query.get(id))
+
+    return render_template('selecttitle.html', titles=inventorydb.Title.query.all())
+
+
+@app.route('/updatetitle', methods=['GET', 'POST'])
+def updatetitle():
+    if request.method == 'POST':
+
+        id = request.form["job_title"]
+        title=inventorydb.Title.query.get(id)
+        
+        #title.job_title = request.form['job_title']
+        title.department = request.form['department']
+        title.access_level = int(request.form['access_level'])
+
+        inventorydb.db.session.commit()
+
+        return redirect(url_for('viewtitles'))
+
+    return render_template('updatetitle.html')
+
+
+    job_title = db.Column(db.String(50), primary_key=True)
+    department = db.Column(db.String(50), nullable=False)
+    access_level = db.Column(db.Integer, nullable=False)
+    emp_title = db.relationship("EmployeeTitle", backref="emp_title", lazy="joined")
+
+    def __init__ (self, job_title, department, access_level):
+        self.job_title = job_title
+        self.department = department
+        self.access_level = access_level
+
+
+@app.route('/deletetitle', methods=['GET', 'POST'])
+def deletetitle():
+    if request.method == 'POST':
+        id = request.form['job_title']
+
+        try:
+            inventorydb.db.session.delete(inventorydb.Title.query.filter_by(job_title=id).one())
+            inventorydb.db.session.commit()
+        except:
+            #NEED TO ADD AN ERROR MESSAGE HERE
+            return render_template('deletetitle.html')
+
+    return render_template('deletetitle.html')
 
 
 
@@ -209,6 +299,57 @@ def addsupplier():
     return render_template('addsupplier.html')
 
 
+@app.route('/selectsupplier', methods=['GET', 'POST'])
+def selectsupplier():
+
+    if request.method == 'POST':
+
+        id = request.form["supplier_id"]
+        return render_template('updatesupplier.html', query=inventorydb.Supplier.query.get(id))
+
+    return render_template('selectsupplier.html', suppliers=inventorydb.Supplier.query.all())
+
+
+@app.route('/updatesupplier', methods=['GET', 'POST'])
+def updatesupplier():
+    if request.method == 'POST':
+
+        id = request.form["supplier_id"]
+        supplier=inventorydb.Supplier.query.get(id)
+        
+        supplier.name = request.form['name']
+        supplier.phone = request.form['phone']
+        supplier.email = (request.form['email'])
+        supplier.comments = (request.form['comments'])
+
+        inventorydb.db.session.commit()
+
+        return redirect(url_for('viewsuppliers'))
+
+    return render_template('updatesupplier.html')
+
+
+@app.route('/deletesupplier', methods=['GET', 'POST'])
+def deletesupplier():
+    if request.method == 'POST':
+        id = request.form['supplier_id']
+
+        try:
+            inventorydb.db.session.delete(inventorydb.Supplier.query.filter_by(supplier_id=id).one())
+            inventorydb.db.session.commit()
+        except:
+            #NEED TO ADD AN ERROR MESSAGE HERE
+            return render_template('deletesupplier.html')
+
+    return render_template('deletesupplier.html')
+
+
+
+
+
+
+
+
 
 @app.route('/viewcategories', methods=['GET', 'POST'])
 def viewcategories():
@@ -217,7 +358,7 @@ def viewcategories():
 
 
 @app.route('/addcategory', methods=['GET', 'POST'])
-def adcategoryr():
+def addcategory():
     if request.method == 'POST':
 
         category = inventorydb.Category(request.form['name'], request.form['description'])
@@ -226,7 +367,47 @@ def adcategoryr():
 
     return render_template('addcategory.html')
 
+@app.route('/deletecategory', methods=['GET', 'POST'])
+def deletecategory():
+    if request.method == 'POST':
+        id = request.form['category_id']
 
+        try:
+            inventorydb.db.session.delete(inventorydb.Category.query.filter_by(category_id=id).one())
+            inventorydb.db.session.commit()
+        except:
+            #NEED TO ADD AN ERROR MESSAGE HERE
+            return render_template('deletecategory.html')
+
+    return render_template('deletecategory.html')
+
+
+@app.route('/selectcategory', methods=['GET', 'POST'])
+def selectcategory():
+
+    if request.method == 'POST':
+
+        id = request.form["category_id"]
+        return render_template('updatecategory.html', query=inventorydb.Category.query.get(id))
+
+    return render_template('selectcategory.html', categories=inventorydb.Category.query.all())
+
+
+@app.route('/updatecategory', methods=['GET', 'POST'])
+def updatecategory():
+    if request.method == 'POST':
+
+        id = request.form["category_id"]
+        category=inventorydb.Category.query.get(id)
+        
+        category.name = request.form['name']
+        category.description = request.form['description']
+
+        inventorydb.db.session.commit()
+
+        return redirect(url_for('viewcategories'))
+
+    return render_template('updatecategory.html')
 
 
 

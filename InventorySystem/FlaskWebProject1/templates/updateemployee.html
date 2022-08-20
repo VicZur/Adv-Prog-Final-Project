@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Employee</title>
+</head>
+<body>
+    <h3>Update Employee Info</h3>
+    <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
+        source for form & table together-->
+
+    <form action="/updateemployee" method="post">
+        <table border="2" cellpadding="5">
+            <thead>
+
+                <tr>
+                    <th>Employee Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>PPS Number</th>
+                    <th>DOS</th>
+                    <th>Hire Date</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="emp_id" value="{{ query.emp_id }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="first_name" value="{{ query.first_name }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="last_name" value="{{ query.last_name }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="pps_number" value="{{ query.pps_number }}" />
+                    </td>
+                    <td>
+                        <input type="date" name="dob" value="{{ query.dob }}" />
+                    </td>
+                    <td>
+                        <input type="date" name="hire_date" value="{{ query.hire_date }}" />
+                    </td>
+                    <td>
+                        <input type="text" readonly name="title" value="{{ query.title }}" />
+
+
+
+                        <!--<select name="title" placeholder="Title">
+                            <option value="{{ query.title }}" hidden="hidden">{{ query.title }}</option>
+                            {% for title in titles %}
+                            <option value="{{ title.job_title }}">{{ title.job_title }}</option>
+                            {% endfor %}
+
+                        </select><br />-->
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

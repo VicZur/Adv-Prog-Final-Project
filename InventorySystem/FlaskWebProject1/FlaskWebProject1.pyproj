@@ -44,7 +44,7 @@
     <Content Include="templates\viewemployee.html" />
     <Content Include="templates\deleteemployee.html" />
     <Content Include="templates\updateitem.html" />
-    <Content Include="templates\searchitem.html" />
+    <Content Include="templates\selectitem.html" />
     <Content Include="templates\viewtitles.html" />
     <Content Include="templates\viewemployeetitles.html" />
     <Content Include="templates\viewsuppliers.html" />
@@ -52,6 +52,17 @@
     <Content Include="templates\addsupplier.html" />
     <Content Include="templates\addcategory.html" />
     <Content Include="templates\addtitle.html" />
+    <Content Include="templates\deletesupplier.html" />
+    <Content Include="templates\deletecategory.html" />
+    <Content Include="templates\deletetitle.html" />
+    <Content Include="templates\selectemployee.html" />
+    <Content Include="templates\updateemployee.html" />
+    <Content Include="templates\selectcategory.html" />
+    <Content Include="templates\updatecategory.html" />
+    <Content Include="templates\selectsupplier.html" />
+    <Content Include="templates\updatesupplier.html" />
+    <Content Include="templates\selecttitle.html" />
+    <Content Include="templates\updatetitle.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

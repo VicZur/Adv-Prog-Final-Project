@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Select Item</title>
+</head>
+<body>
+
+
+    <h2>Select Item</h2>
+
+    <form action="/selectitem" method="post">
+
+        <label for="item_id">Item</label><br />
+        <select name="item_id" placeholder="Item">
+
+            {% for item in items %}
+            <option value="{{ item.item_id }}">{{ item.item_id }} {{ item.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit" />
+    </form>
+
+</body>
+</html>

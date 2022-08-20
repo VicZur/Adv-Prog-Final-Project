@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Title</title>
+</head>
+<body>
+    <h3>Update Title</h3>
+    <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
+        source for form & table together-->
+
+    <form action="/updatetitle" method="post">
+        <table border="2" cellpadding="5">
+            <thead>
+
+                <tr>
+                    <th>Job Title</th>
+                    <th>Department</th>
+                    <th>Access Level</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="job_title" value="{{ query.job_title }}" />
+                    </td>    
+                    <!--<td>
+                        <input type="text" name="job_title" value="{{ query.job_title }}" />
+                    </td>-->
+                    <td>
+                        <input type="text" name="department" value="{{ query.department }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="access_level" value="{{ query.access_level }}" />
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>
+
+

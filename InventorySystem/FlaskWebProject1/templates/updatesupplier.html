@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Supplier</title>
+</head>
+<body>
+    <h3>Update Supplier</h3>
+    <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
+        source for form & table together-->
+
+    <form action="/updatesupplier" method="post">
+        <table border="2" cellpadding="5">
+            <thead>
+
+                <tr>
+                    <th>Supplier Id</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="supplier_id" value="{{ query.supplier_id }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="name" value="{{ query.name }}" />
+                    </td>
+                    <td>
+                        <input type="text" name="phone" value="{{ query.phone }}" />
+                    </td>                    
+                    <td>
+                        <input type="text" name="email" value="{{ query.email }}" />
+                    </td>                    
+                    <td>
+                        <input type="text" name="comments" value="{{ query.comments }}" />
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>
+
