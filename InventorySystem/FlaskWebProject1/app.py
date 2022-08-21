@@ -4,7 +4,7 @@ from flask import Flask, request, flash, url_for, redirect, render_template, ses
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import createtestdata
-from flask_login import LoginManager, login_user, logout_user, login_required #https://flask-login.readthedocs.io/en/latest/
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user #https://flask-login.readthedocs.io/en/latest/
 
 app.secret_key = 'key5'
 
@@ -44,7 +44,20 @@ def login():
 
         if inventorydb.Employee.query.get(id):
             login_user(inventorydb.Employee.query.get(id))
-            return render_template('menu.html')
+
+            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+            currenttitleid = currentjobtitle.emp_job_title
+            currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
+
+            if currentaccesslevel == 3:
+                return redirect(url_for('access3menu'))
+            elif currentaccesslevel == 2:
+                return redirect(url_for('access2menu'))
+            else:
+                return redirect(url_for('access1menu'))
+
+        else:
+            flash('Invalid Login')
 
     return render_template('login.html')
 
@@ -60,10 +73,35 @@ def logout():
 
 
 
-@app.route('/menu')
-def menu():
-    render_template('menu.html')
+@app.route('/access1menu')
+def access1menu():
 
+    currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
+    flash(message)
+
+    return render_template('access1menu.html')
+
+@app.route('/access2menu')
+def access2menu():
+
+    currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
+    flash(message)
+
+    return render_template('access2menu.html')
+
+@app.route('/access3menu')
+def access3menu():
+
+    currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
+    flash(message)
+
+    return render_template('access3menu.html')
 
 
 
