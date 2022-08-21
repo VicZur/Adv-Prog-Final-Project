@@ -1,6 +1,7 @@
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///inventory.sqlite3'
@@ -11,6 +12,8 @@ db = SQLAlchemy(app)
 #Backref info from https://docs.sqlalchemy.org/en/14/orm/backref.html
 #https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
+
+
 class Employee(db.Model):
     __tablename__ = "employee"
     emp_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -19,17 +22,29 @@ class Employee(db.Model):
     pps_number = db.Column(db.String(9), nullable=False)
     dob = db.Column(db.String, nullable=False)
     hire_date = db.Column(db.String, nullable=False)
-    title = db.relationship("EmployeeTitle", backref="employee_job_title", lazy="joined")
+    title = db.relationship("EmployeeTitle", cascade="all,delete", backref="employee_job_title", lazy="joined")
 
 
-    def __init__(self, first_name, last_name, pps_number, dob, hire_date):
+    def __init__(self, first_name, last_name, pps_number, dob, hire_date, title):
         self.first_name = first_name
         self.last_name = last_name
         self.pps_number = pps_number
         self.dob = dob
         self.hire_date = hire_date
 
-    #need username & password?
+    #https://flask-login.readthedocs.io/en/latest/
+
+    def is_authenticated(self):
+        return True #all users are authenticated
+
+    def is_active(self):
+        return True #all users are active
+
+    def is_anonymous(self):
+        return False #anonymous users are not able to access system
+
+    def get_id(self):
+        return str(self.emp_id)
 
 
 

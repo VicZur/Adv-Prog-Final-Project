@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
-    <Content Include="templates\index.html" />
+    <Content Include="templates\menu.html" />
     <Content Include="templates\additem.html" />
     <Content Include="templates\viewitem.html" />
     <Content Include="templates\deleteitem.html" />
@@ -63,6 +63,9 @@
     <Content Include="templates\updatesupplier.html" />
     <Content Include="templates\selecttitle.html" />
     <Content Include="templates\updatetitle.html" />
+    <Content Include="templates\login.html" />
+    <Content Include="templates\logout.html" />
+    <Content Include="templates\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

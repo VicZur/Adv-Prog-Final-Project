@@ -4,11 +4,15 @@ from flask import Flask, request, flash, url_for, redirect, render_template, ses
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import createtestdata
+from flask_login import LoginManager, login_user, logout_user, login_required #https://flask-login.readthedocs.io/en/latest/
+
+app.secret_key = 'key5'
 
 if __name__ == '__main__':
     db.create_all
     db.init_app(app)
-
+    login_manager = LoginManager()
+    login_manager.init_app(app)
 
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
@@ -16,7 +20,50 @@ wsgi_app = app.wsgi_app
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('login'))
+
+#@app.route('/')
+#def login():
+#    return render_template('login.html')
+
+#@app.route('/')
+#def index():
+#    return redirect(url_for('login'))
+
+
+
+@login_manager.user_loader
+def load_user(emp_id):
+    return inventorydb.Employee.query.get(emp_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+
+        id = request.form['username']   
+
+        if inventorydb.Employee.query.get(id):
+            login_user(inventorydb.Employee.query.get(id))
+            return render_template('menu.html')
+
+    return render_template('login.html')
+
+
+
+@app.route('/logout', methods=['GET'])
+@login_required
+def logout():
+
+    logout_user()
+    return render_template("logout.html")
+
+
+
+
+@app.route('/menu')
+def menu():
+    render_template('menu.html')
+
 
 
 
@@ -128,7 +175,7 @@ def addemployee():
     #     flash('Please enter all the fields', 'error')
     # else:
         
-        employee = inventorydb.Employee(request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'])
+        employee = inventorydb.Employee(request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'], request.form['job_title'])
         inventorydb.db.session.add(employee)
         inventorydb.db.session.flush() #flush() use info taken from https://stackoverflow.com/questions/27736122/how-to-insert-into-multiple-tables-to-mysql-with-sqlalchemy
          
@@ -153,9 +200,11 @@ def viewemployee():
 def selectemployee():
 
     if request.method == 'POST':
-
         id = request.form["emp_id"]
+
+            
         return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id), titles=inventorydb.Title.query.all())
+       
 
     return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 

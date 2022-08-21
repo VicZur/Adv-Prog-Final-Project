@@ -55,22 +55,20 @@ def create_test_title():
 
 def create_test_employee():
     
-    employee = inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022')
+    #employees = [inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Server')
+    #            , inventorydb.Employee('John', 'Doe', '987654321B', '08-01-1988', '14-08-2022', 'Supervisor')
+    #            , inventorydb.Employee('TestAdmin', 'TestAdmin', '111222333C', '05-05-1995', '14-08-2022', 'Admin')]
 
+    #for employee in employees:
+    #    inventorydb.db.session.add(employee)
+    
+    employee = inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Supervisor')
     inventorydb.db.session.add(employee)
-    inventorydb.db.session.commit()
-
-
-def test_job_title():
-    jobtest = inventorydb.EmployeeTitle(1, 'Server', 14082022, '')
-
-    inventorydb.db.session.add(jobtest)
     inventorydb.db.session.commit()
 
 
 
 #create_test_title()
 #create_test_employee()
-#test_job_title()
 #create_test_suppliers()
 #create_test_categories()
