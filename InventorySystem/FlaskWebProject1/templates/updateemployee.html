@@ -19,51 +19,55 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>PPS Number</th>
-                    <th>DOS</th>
+                    <th>DOB</th>
                     <th>Hire Date</th>
                     <th>Title</th>
                 </tr>
             </thead>
 
             <tbody>
+                {% for emp in employee %}
                 <tr>
                     <td>
-                        <input type="text" readonly name="emp_id" value="{{ query.emp_id }}" />
+                        <input type="text" readonly name="emp_id" value="{{ emp.emp_id }}" />
                     </td>
                     <td>
-                        <input type="text" name="first_name" value="{{ query.first_name }}" />
+                        <input type="text" name="first_name" value="{{ emp.first_name }}" />
                     </td>
                     <td>
-                        <input type="text" name="last_name" value="{{ query.last_name }}" />
+                        <input type="text" name="last_name" value="{{ emp.last_name }}" />
                     </td>
                     <td>
-                        <input type="text" name="pps_number" value="{{ query.pps_number }}" />
+                        <input type="text" name="pps_number" value="{{ emp.pps_number }}" />
                     </td>
                     <td>
-                        <input type="date" name="dob" value="{{ query.dob }}" />
+                        <input type="date" name="dob" value="{{ emp.dob }}" />
                     </td>
                     <td>
-                        <input type="date" name="hire_date" value="{{ query.hire_date }}" />
+                        <input type="date" name="hire_date" value="{{ emp.hire_date }}" />
                     </td>
                     <td>
-                        <input type="text" readonly name="title" value="{{ query.title }}" />
-
-
-
-                        <!--<select name="title" placeholder="Title">
-                            <option value="{{ query.title }}" hidden="hidden">{{ query.title }}</option>
+                        <!--<select name="job_title" placeholder="Job Title">
+                            <option value="{{ emp.job_title }}" hidden="hidden">{{ emp.job_title }}</option>
                             {% for title in titles %}
                             <option value="{{ title.job_title }}">{{ title.job_title }}</option>
                             {% endfor %}
 
                         </select><br />-->
+
+
+
+                        <input type="text" readonly name="title" value="{{ emp.job_title }}" />
+
                     </td>
 
                 </tr>
-
+                {% endfor %}
             </tbody>
         </table>
+
         <input type="submit" value="Submit" />
+
     </form>
 </body>
 </html>

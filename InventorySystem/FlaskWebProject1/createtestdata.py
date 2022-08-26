@@ -62,8 +62,12 @@ def create_test_employee():
     #for employee in employees:
     #    inventorydb.db.session.add(employee)
     
-    employee = inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Supervisor')
-    inventorydb.db.session.add(employee)
+    #employee = inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Supervisor')
+    employee1 = inventorydb.Employee('Admin', 'Admin', '111000222B', '08-08-1988', '08-08-2022','Admin')
+    employee_title = inventorydb.EmployeeTitle(1, 'Admin', '08-08-2022', '')
+
+    inventorydb.db.session.add(employee1)
+    inventorydb.db.session.add(employee_title)
     inventorydb.db.session.commit()
 
 

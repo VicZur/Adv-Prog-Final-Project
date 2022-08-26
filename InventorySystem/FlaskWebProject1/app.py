@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 import createtestdata
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user #https://flask-login.readthedocs.io/en/latest/
+from functools import wraps #https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
 
 app.secret_key = 'key5'
 
@@ -17,7 +18,6 @@ if __name__ == '__main__':
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
 
-
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -29,6 +29,18 @@ def index():
 #@app.route('/')
 #def index():
 #    return redirect(url_for('login'))
+
+
+#decorator for access levels code from https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
+#and https://circleci.com/blog/authentication-decorators-flask/#:~:text=A%20decorator%20is%20a%20function,being%20assigned%20to%20a%20variable
+#additional research & information from https://circleci.com/blog/authentication-decorators-flask/#:~:text=A%20decorator%20is%20a%20function,being%20assigned%20to%20a%20variable.
+#def requires_access_level(access_level):
+#    def decorator(f):
+#        @wraps(f)
+#        def decorated_function(*args, **kwargs):
+#            if not session.get('emp_id'):
+#                return redirect(url_for('login'))
+
 
 
 
@@ -74,6 +86,7 @@ def logout():
 
 
 @app.route('/access1menu')
+@login_required
 def access1menu():
 
     currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
@@ -84,6 +97,7 @@ def access1menu():
     return render_template('access1menu.html')
 
 @app.route('/access2menu')
+@login_required
 def access2menu():
 
     currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
@@ -94,6 +108,7 @@ def access2menu():
     return render_template('access2menu.html')
 
 @app.route('/access3menu')
+@login_required
 def access3menu():
 
     currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
@@ -112,6 +127,7 @@ def access3menu():
 
 
 @app.route('/additem', methods=['GET', 'POST'])
+@login_required
 def additem():
 
     if request.method == 'POST':
@@ -132,12 +148,14 @@ def additem():
 
 
 @app.route('/viewitem', methods=['GET', 'POST'])
+@login_required
 def viewitem():
 
     return render_template('viewitem.html', query=inventorydb.Item.query.all())
 
 
 @app.route('/deleteitem', methods=['GET', 'POST'])
+@login_required
 def deleteitem():
 
     if request.method == 'POST':
@@ -151,6 +169,7 @@ def deleteitem():
 
 
 @app.route('/selectitem', methods=['GET', 'POST'])
+@login_required
 def selectitem():
 
     if request.method == 'POST':
@@ -163,6 +182,7 @@ def selectitem():
 
 
 @app.route('/updateitem', methods=['GET', 'POST'])
+@login_required
 def updateitem():
     if request.method == 'POST':
 
@@ -204,6 +224,7 @@ def updateitem():
 
 
 @app.route('/addemployee', methods=['GET', 'POST'])
+@login_required
 def addemployee():
 
 
@@ -227,39 +248,90 @@ def addemployee():
 
 
 @app.route('/viewemployee', methods=['GET', 'POST'])
+@login_required
 def viewemployee():
 
-    return render_template('viewemployee.html', employees=inventorydb.Employee.query.all())
-    #return render_template('viewemployee.html', employees=inventorydb.Employee.query.join(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
-    #return render_template('viewemployee.html', employees=inventorydb.db.session.query(inventorydb.Employee, inventorydb.EmployeeTitle.emp_job_title, inventorydb.Title.access_level).join(inventorydb.Employee).join(inventorydb.EmployeeTitle).join(inventorydb.Title).filter(inventorydb.Employee.emp_id == inventorydb.EmployeeTitle.emp_title_id).all())
+    #query help from https://stackoverflow.com/questions/28518510/select-attributes-from-different-joined-tables-with-flask-and-sqlalchemy
+    #and https://stackoverflow.com/questions/46657757/basequery-object-not-callable-inside-a-flask-app-using-sqlalchemy
+    #and https://stackoverflow.com/questions/60444153/flask-sql-alchemy-join-multiple-tables
+
+    return render_template('viewemployee.html',
+                                               employees=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
+                                                    ,inventorydb.Title.job_title, inventorydb.Title.access_level)
+                                                    .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
+                                                    .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).all())
+
     
 
+
+
+
+
+
+
+
 @app.route('/selectemployee', methods=['GET', 'POST'])
+@login_required
 def selectemployee():
 
     if request.method == 'POST':
         id = request.form["emp_id"]
 
-            
-        return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id), titles=inventorydb.Title.query.all())
-       
+        if 'update' in request.form:
 
+            return render_template('updateemployee.html', titles = inventorydb.Title.query.all(),
+                                                                                          employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
+                                                                                         ,inventorydb.Title.job_title)
+                                                                                         .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
+                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+            
+        elif 'delete' in request.form:
+             return render_template('deleteemployee.html', titles = inventorydb.Title.query.all(),
+                                                                                          employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
+                                                                                         ,inventorydb.Title.job_title)
+                                                                                         .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
+                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+            
+
+        #WORKS return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id) 
+
+
+
+
+
+                               #, query=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
+                               #                     ,inventorydb.Title.job_title, inventorydb.Title.access_level)
+                               #                     .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
+                               #                     .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter_by(inventorydb.Employee.emp_id==id).fisrt())
+       
     return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 
 
 @app.route('/updateemployee', methods=['GET', 'POST'])
+@login_required
 def updateemployee():
     if request.method == 'POST':
 
         id = request.form["emp_id"]
+
+        #this only works if the job_title field has been updated / didn't exist before
+        employeetitle = inventorydb.EmployeeTitle(employee.id, request.form['job_title'], request.form['hire_date'], '')
+        inventorydb.db.session.add(employeetitle)
+
+
+
         employee=inventorydb.Employee.query.get(id)
-        
+
+        #title = employee.title
+
+        #jobtitle=inventorydb.Employee.query.get(title)
+
         employee.first_name = request.form['first_name']
         employee.last_name = request.form['last_name']
         employee.pps_number = (request.form['pps_number'])
         employee.dob = (request.form['dob'])
         employee.hire_date = (request.form['hire_date'])
-        employee.title = request.form['title']
+        #employee.title = request.form['job_title']
 
         inventorydb.db.session.commit()
 
@@ -269,6 +341,7 @@ def updateemployee():
 
 
 @app.route('/deleteemployee', methods=['GET', 'POST'])
+@login_required
 def deleteemployee():
 
     if request.method == 'POST':
@@ -281,7 +354,7 @@ def deleteemployee():
             #NEED TO ADD AN ERROR MESSAGE HERE
             return render_template('deleteemployee.html')
 
-    return render_template('deleteemployee.html')
+    return redirect(url_for('viewemployee'))
 
 
 
@@ -289,12 +362,14 @@ def deleteemployee():
 
 
 @app.route('/viewtitles', methods=['GET', 'POST'])
+@login_required
 def viewtitles():
     return render_template('viewtitles.html', query=inventorydb.Title.query.all())
 
 
 
 @app.route('/addtitle', methods=['GET', 'POST'])
+@login_required
 def addtitle():
     if request.method =='POST':
 
@@ -305,6 +380,7 @@ def addtitle():
 
 
 @app.route('/selecttitle', methods=['GET', 'POST'])
+@login_required
 def selecttitle():
 
     if request.method == 'POST':
@@ -316,6 +392,7 @@ def selecttitle():
 
 
 @app.route('/updatetitle', methods=['GET', 'POST'])
+@login_required
 def updatetitle():
     if request.method == 'POST':
 
@@ -345,6 +422,7 @@ def updatetitle():
 
 
 @app.route('/deletetitle', methods=['GET', 'POST'])
+@login_required
 def deletetitle():
     if request.method == 'POST':
         id = request.form['job_title']
@@ -362,12 +440,14 @@ def deletetitle():
 
 
 @app.route('/viewemployeetitles', methods=['GET', 'POST'])
+@login_required
 def viewemployeetitles():
     return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
 
 
 
 @app.route('/viewsuppliers', methods=['GET', 'POST'])
+@login_required
 def viewsuppliers():
     return render_template('viewsuppliers.html', query=inventorydb.Supplier.query.all())
 
@@ -376,6 +456,7 @@ def viewsuppliers():
 
 
 @app.route('/addsupplier', methods=['GET', 'POST'])
+@login_required
 def addsupplier():
     if request.method == 'POST':
 
@@ -387,6 +468,7 @@ def addsupplier():
 
 
 @app.route('/selectsupplier', methods=['GET', 'POST'])
+@login_required
 def selectsupplier():
 
     if request.method == 'POST':
@@ -398,6 +480,7 @@ def selectsupplier():
 
 
 @app.route('/updatesupplier', methods=['GET', 'POST'])
+@login_required
 def updatesupplier():
     if request.method == 'POST':
 
@@ -417,6 +500,7 @@ def updatesupplier():
 
 
 @app.route('/deletesupplier', methods=['GET', 'POST'])
+@login_required
 def deletesupplier():
     if request.method == 'POST':
         id = request.form['supplier_id']
@@ -439,12 +523,14 @@ def deletesupplier():
 
 
 @app.route('/viewcategories', methods=['GET', 'POST'])
+@login_required
 def viewcategories():
     return render_template('viewcategories.html', query=inventorydb.Category.query.all())
 
 
 
 @app.route('/addcategory', methods=['GET', 'POST'])
+@login_required
 def addcategory():
     if request.method == 'POST':
 
@@ -455,6 +541,7 @@ def addcategory():
     return render_template('addcategory.html')
 
 @app.route('/deletecategory', methods=['GET', 'POST'])
+@login_required
 def deletecategory():
     if request.method == 'POST':
         id = request.form['category_id']
@@ -470,6 +557,7 @@ def deletecategory():
 
 
 @app.route('/selectcategory', methods=['GET', 'POST'])
+@login_required
 def selectcategory():
 
     if request.method == 'POST':
@@ -481,6 +569,7 @@ def selectcategory():
 
 
 @app.route('/updatecategory', methods=['GET', 'POST'])
+@login_required
 def updatecategory():
     if request.method == 'POST':
 

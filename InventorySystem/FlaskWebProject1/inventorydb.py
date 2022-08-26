@@ -22,7 +22,8 @@ class Employee(db.Model):
     pps_number = db.Column(db.String(9), nullable=False)
     dob = db.Column(db.String, nullable=False)
     hire_date = db.Column(db.String, nullable=False)
-    title = db.relationship("EmployeeTitle", cascade="all,delete", backref="employee_job_title", lazy="joined")
+    #job_title = db.relationship("Title", back_populates = "title")
+    title = db.relationship("EmployeeTitle", uselist=False, cascade="all,delete", backref="employee_job_title", lazy="joined")
 
 
     def __init__(self, first_name, last_name, pps_number, dob, hire_date, title):
