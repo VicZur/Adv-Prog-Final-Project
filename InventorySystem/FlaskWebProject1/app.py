@@ -3,6 +3,7 @@ from inventorydb import db, app
 from flask import Flask, request, flash, url_for, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+from datetime import timedelta
 import createtestdata
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user #https://flask-login.readthedocs.io/en/latest/
 from functools import wraps #https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
@@ -12,30 +13,46 @@ app.secret_key = 'key5'
 if __name__ == '__main__':
     db.create_all
     db.init_app(app)
+    #https://flask-login.readthedocs.io/en/latest/
+    #https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager.login_view
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.login_view = 'login'
 
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
 
-@app.route('/')
+
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=2)
+
+@app.route('/') 
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('login')) #want to make this nav instead???
 
 
 
 #decorator for access levels code from https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
 #and https://circleci.com/blog/authentication-decorators-flask/#:~:text=A%20decorator%20is%20a%20function,being%20assigned%20to%20a%20variable
 #additional research & information from https://circleci.com/blog/authentication-decorators-flask/#:~:text=A%20decorator%20is%20a%20function,being%20assigned%20to%20a%20variable.
-#def requires_access_level(access_level):
-#    def decorator(f):
-#        @wraps(f)
-#        def decorated_function(*args, **kwargs):
-#            if not session.get('emp_id'):
-#                return redirect(url_for('login'))
+def requires_access_level(access_level):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function():
+            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+            currenttitleid = currentjobtitle.emp_job_title
+            currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
+            if not session.get('emp_id'):
+                return render_template('noauth.html')
 
-
+            elif not currentaccesslevel >= access_level:
+                return render_template('noauth.html')
+            return ()
+        return decorated_function
+    return decorator
 
 @login_manager.user_loader
 def load_user(emp_id):
@@ -88,12 +105,9 @@ def nav():
     return render_template('nav.html', accesslevel=currentaccesslevel)
 
 
-
-
-
-
 @app.route('/additem', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def additem():
 
     if request.method == 'POST':
@@ -116,6 +130,7 @@ def additem():
 
 @app.route('/viewitem', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(1)
 def viewitem():
 
     return render_template('viewitem.html', query=inventorydb.Item.query.all())
@@ -123,6 +138,7 @@ def viewitem():
 
 @app.route('/deleteitem', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def deleteitem():
 
     if request.method == 'POST':
@@ -137,6 +153,7 @@ def deleteitem():
 
 @app.route('/selectitem', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def selectitem():
 
     if request.method == 'POST':
@@ -150,6 +167,7 @@ def selectitem():
 
 @app.route('/updateitem', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def updateitem():
     if request.method == 'POST':
 
@@ -181,21 +199,9 @@ def updateitem():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/addemployee', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def addemployee():
 
     if request.method == 'POST':
@@ -219,6 +225,7 @@ def addemployee():
 
 @app.route('/viewemployee', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def viewemployee():
 
 
@@ -243,6 +250,7 @@ def viewemployee():
 
 @app.route('/selectemployee', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def selectemployee():
 
 
@@ -295,6 +303,7 @@ def selectemployee():
 
 @app.route('/updateemployee', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def updateemployee():
     if request.method == 'POST':
 
@@ -345,6 +354,7 @@ def updateemployee():
 
 @app.route('/deleteemployee', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def deleteemployee():
 
     id = request.form["emp_id"]
@@ -374,6 +384,7 @@ def deleteemployee():
 
 @app.route('/viewtitles', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def viewtitles():
     return render_template('viewtitles.html', query=inventorydb.Title.query.all())
 
@@ -381,6 +392,7 @@ def viewtitles():
 
 @app.route('/addtitle', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def addtitle():
     if request.method =='POST':
         if not request.form['job_title'] or not request.form['department'] or not request.form['access_level']:
@@ -397,6 +409,7 @@ def addtitle():
 
 @app.route('/selecttitle', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def selecttitle():
 
     if request.method == 'POST':
@@ -409,6 +422,7 @@ def selecttitle():
 
 @app.route('/updatetitle', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def updatetitle():
     if request.method == 'POST':
 
@@ -444,6 +458,7 @@ def updatetitle():
 
 @app.route('/deletetitle', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(3)
 def deletetitle():
     if request.method == 'POST':
         id = request.form['job_title']
@@ -462,6 +477,7 @@ def deletetitle():
 
 @app.route('/viewemployeetitles', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def viewemployeetitles():
     return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
 
@@ -469,6 +485,7 @@ def viewemployeetitles():
 
 @app.route('/viewsuppliers', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(1)
 def viewsuppliers():
     return render_template('viewsuppliers.html', query=inventorydb.Supplier.query.all())
 
@@ -478,6 +495,7 @@ def viewsuppliers():
 
 @app.route('/addsupplier', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def addsupplier():
     if request.method == 'POST':
 
@@ -495,6 +513,7 @@ def addsupplier():
 
 @app.route('/selectsupplier', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def selectsupplier():
 
     if request.method == 'POST':
@@ -507,6 +526,7 @@ def selectsupplier():
 
 @app.route('/updatesupplier', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def updatesupplier():
     if request.method == 'POST':
 
@@ -533,6 +553,7 @@ def updatesupplier():
 
 @app.route('/deletesupplier', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def deletesupplier():
     if request.method == 'POST':
         id = request.form['supplier_id']
@@ -556,6 +577,7 @@ def deletesupplier():
 
 @app.route('/viewcategories', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(1)
 def viewcategories():
     return render_template('viewcategories.html', query=inventorydb.Category.query.all())
 
@@ -563,6 +585,7 @@ def viewcategories():
 
 @app.route('/addcategory', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def addcategory():
     if request.method == 'POST':
         if not request.form['name'] or not request.form['description']:
@@ -579,6 +602,7 @@ def addcategory():
 
 @app.route('/deletecategory', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def deletecategory():
     if request.method == 'POST':
         id = request.form['category_id']
@@ -595,6 +619,7 @@ def deletecategory():
 
 @app.route('/selectcategory', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def selectcategory():
 
     if request.method == 'POST':
@@ -607,6 +632,7 @@ def selectcategory():
 
 @app.route('/updatecategory', methods=['GET', 'POST'])
 @login_required
+@requires_access_level(2)
 def updatecategory():
     if request.method == 'POST':
         id = request.form["category_id"]

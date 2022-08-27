@@ -66,6 +66,7 @@
     <Content Include="templates\login.html" />
     <Content Include="templates\logout.html" />
     <Content Include="templates\index.html" />
+    <Content Include="templates\noauth.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="templates\" />

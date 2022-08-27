@@ -19,7 +19,7 @@ class Employee(db.Model):
     emp_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    pps_number = db.Column(db.String(9), nullable=False)
+    pps_number = db.Column(db.String(9), nullable=False)    
     dob = db.Column(db.String, nullable=False)
     hire_date = db.Column(db.String, nullable=False)
     #job_title = db.relationship("Title", back_populates = "title")
@@ -60,6 +60,7 @@ class Title(db.Model):
         self.job_title = job_title
         self.department = department
         self.access_level = access_level
+
 
 
 class EmployeeTitle(db.Model):
