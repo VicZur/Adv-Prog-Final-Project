@@ -38,10 +38,10 @@
                         <input type="text" name="description" value="{{ query.description }}" />
                     </td>
                     <td>
-                        <input type="number" min="0" step="any" name="unit_cost" value="{{ query.unit_cost }}" />
+                        <input type="number" min="0" step="any" name="unit_cost" value="{{ '%0.2f' |format (query.unit_cost|float) }}" />
                     </td>
                     <td>
-                        <input type="number" min="0" step="any" name="sale_price" value="{{ query.sale_price }}" />
+                        <input type="number" min="0" step="any" name="sale_price" value="{{ '%0.2f' |format (query.sale_price|float) }}" />
                     </td>
                     <td>
                         <input type="number" min="0" step="1" name="units_in_stock" value="{{ query.units_in_stock }}" />
@@ -68,7 +68,7 @@
                         </select><br />
 
                     </td>
-                    
+
                 </tr>
 
             </tbody>
@@ -76,5 +76,14 @@
         <input type="submit" value="Submit" />
     </form>
 
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </body>
 </html>

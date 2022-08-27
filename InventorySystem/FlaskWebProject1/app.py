@@ -97,16 +97,17 @@ def nav():
 def additem():
 
     if request.method == 'POST':
-    #  if not request.form['name'] or not request.form['salary'] or not request.form['age']:
-    #     flash('Please enter all the fields', 'error')
-    # else:
 
-        item = inventorydb.Item(request.form['name'], request.form['description'], int(request.form['unit_cost']), int(request.form['sale_price']), int(request.form['units_in_stock']), request.form['expiration_date'], int(request.form['supplier_id']), int(request.form['category_id']))
+        if not request.form['name'] or not request.form['description'] or not request.form['unit_cost'] or not request.form['sale_price'] or not request.form['units_in_stock'] or not request.form['supplier_id'] or not request.form['category_id']:
+            flash('Error: all fields are required')
+        else:
+
+            item = inventorydb.Item(request.form['name'], request.form['description'], float(request.form['unit_cost']), float(request.form['sale_price']), int(request.form['units_in_stock']), request.form['expiration_date'], int(request.form['supplier_id']), int(request.form['category_id']))
 
 
-        inventorydb.db.session.add(item)
-        inventorydb.db.session.commit()
-  #      flash('Record was successfully added')
+            inventorydb.db.session.add(item)
+            inventorydb.db.session.commit()
+            flash('Item was successfully added')
 
     return render_template('additem.html', suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
 
@@ -152,25 +153,29 @@ def selectitem():
 def updateitem():
     if request.method == 'POST':
 
-        #item=inventorydb.Item.query.get(5)
-
         id = request.form["item_id"]
-        item=inventorydb.Item.query.get(id)
+
+        if not request.form['name'] or not request.form['description'] or not request.form['unit_cost'] or not request.form['sale_price'] or not request.form['units_in_stock'] or not request.form['supplier_id'] or not request.form['category_id']:
+            flash('Error: all fields are required')
+
+        else:
+
+            item=inventorydb.Item.query.get(id)
         
-        item.name = request.form['name']
-        item.description = request.form['description']
-        item.unit_cost = (request.form['unit_cost'])
-        item.sale_price = (request.form['sale_price'])
-        item.units_in_stock = int(request.form['units_in_stock'])
-        item.expiration_date = request.form['expiration_date']
-        item.supplier_id = int(request.form['supplier_id'])
-        item.category_id = int(request.form['category_id'])
+            item.name = request.form['name']
+            item.description = request.form['description']
+            item.unit_cost = float(request.form['unit_cost'])
+            item.sale_price = float(request.form['sale_price'])
+            item.units_in_stock = int(request.form['units_in_stock'])
+            item.expiration_date = request.form['expiration_date']
+            item.supplier_id = int(request.form['supplier_id'])
+            item.category_id = int(request.form['category_id'])
 
-        inventorydb.db.session.commit()
+            inventorydb.db.session.commit()
 
-        return redirect(url_for('viewitem'))
+            return redirect(url_for('viewitem'))
 
-    return render_template('updateitem.html')
+    return render_template('updateitem.html', query=inventorydb.Item.query.get(id), suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
 
 
 
@@ -193,22 +198,21 @@ def updateitem():
 @login_required
 def addemployee():
 
-
-
     if request.method == 'POST':
-    #  if not request.form['name'] or not request.form['salary'] or not request.form['age']:
-    #     flash('Please enter all the fields', 'error')
-    # else:
-        
-        employee = inventorydb.Employee(request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'], request.form['job_title'])
-        inventorydb.db.session.add(employee)
-        inventorydb.db.session.flush() #flush() use info taken from https://stackoverflow.com/questions/27736122/how-to-insert-into-multiple-tables-to-mysql-with-sqlalchemy
-         
-        employeetitle = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], request.form['hire_date'], '')
-        inventorydb.db.session.add(employeetitle)
 
-        inventorydb.db.session.commit()
-  #      flash('Record was successfully added')
+        if not request.form['first_name'] or not request.form['last_name'] or not request.form['pps_number'] or not request.form['dob'] or not request.form['hire_date']:
+            flash('Error: all fields are required')
+
+        else:        
+            employee = inventorydb.Employee(request.form['first_name'], request.form['last_name'], request.form['pps_number'], request.form['dob'], request.form['hire_date'], request.form['job_title'])
+            inventorydb.db.session.add(employee)
+            inventorydb.db.session.flush() #flush() use info taken from https://stackoverflow.com/questions/27736122/how-to-insert-into-multiple-tables-to-mysql-with-sqlalchemy
+         
+            employeetitle = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], request.form['hire_date'], '')
+            inventorydb.db.session.add(employeetitle)
+
+            inventorydb.db.session.commit()
+            flash('Employee was successfully added')
 
     return render_template('addemployee.html', jobtitles=inventorydb.Title.query.all())
 
@@ -216,6 +220,7 @@ def addemployee():
 @app.route('/viewemployee', methods=['GET', 'POST'])
 @login_required
 def viewemployee():
+
 
     #query help from https://stackoverflow.com/questions/28518510/select-attributes-from-different-joined-tables-with-flask-and-sqlalchemy
     #and https://stackoverflow.com/questions/46657757/basequery-object-not-callable-inside-a-flask-app-using-sqlalchemy
@@ -294,29 +299,46 @@ def updateemployee():
     if request.method == 'POST':
 
         id = request.form["emp_id"]
+        
+        if 'update' in request.form:
 
-        #this only works if the job_title field has been updated / didn't exist before
-        employeetitle = inventorydb.EmployeeTitle(employee.id, request.form['job_title'], request.form['hire_date'], '')
-        inventorydb.db.session.add(employeetitle)
+            if not request.form['first_name'] or not request.form['last_name'] or not request.form['pps_number'] or not request.form['dob'] or not request.form['hire_date']:
+                flash('Error: all fields are required')
+
+                return render_template('updateemployee.html', titles = inventorydb.Title.query.all(),
+                                                                                          employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
+                                                                                         ,inventorydb.Title.job_title)
+                                                                                         .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
+                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+       
+
+            else:
+
+                employee=inventorydb.Employee.query.get(id)
+
+                #this only works if the job_title field has been updated / didn't exist before
+                employeetitle = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], request.form['hire_date'], '')
+                inventorydb.db.session.add(employeetitle)
 
 
 
-        employee=inventorydb.Employee.query.get(id)
+                #title = employee.title
 
-        #title = employee.title
+                #jobtitle=inventorydb.Employee.query.get(title)
 
-        #jobtitle=inventorydb.Employee.query.get(title)
+                employee.first_name = request.form['first_name']
+                employee.last_name = request.form['last_name']
+                employee.pps_number = (request.form['pps_number'])
+                employee.dob = (request.form['dob'])
+                employee.hire_date = (request.form['hire_date'])
+                #employee.title = request.form['job_title']
 
-        employee.first_name = request.form['first_name']
-        employee.last_name = request.form['last_name']
-        employee.pps_number = (request.form['pps_number'])
-        employee.dob = (request.form['dob'])
-        employee.hire_date = (request.form['hire_date'])
-        #employee.title = request.form['job_title']
+                inventorydb.db.session.commit()
 
-        inventorydb.db.session.commit()
+                return redirect(url_for('viewemployee'))
 
-        return redirect(url_for('viewemployee'))
+        else:
+            return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 
     return render_template('updateemployee.html')
 
@@ -328,14 +350,22 @@ def deleteemployee():
     id = request.form["emp_id"]
     
     if request.method == 'POST':
-        try:
-            inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
-            inventorydb.db.session.commit()
-        except:
-            message = 'Error: unable to delete the employee'
-            return render_template('deleteemployee.html')
 
-    return redirect(url_for('viewemployee'))
+        if 'delete' in request.form:
+
+            try:
+                inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
+                inventorydb.db.session.commit()
+            except:
+                message = 'Error: unable to delete the employee'
+                flash(message)
+                return render_template('deleteemployee.html')
+
+        else:
+            return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
+
+    return redirect(url_for('viewemployee', message='Employee successfully deleted'))
+    #return render_template('viewemployee.html')
 
 
 
@@ -353,10 +383,15 @@ def viewtitles():
 @login_required
 def addtitle():
     if request.method =='POST':
+        if not request.form['job_title'] or not request.form['department'] or not request.form['access_level']:
+            flash('Error: all fields are required')
 
-        title=inventorydb.Title(request.form['job_title'], request.form['department'], request.form['access_level'])
-        inventorydb.db.session.add(title)
-        inventorydb.db.session.commit()
+        else:     
+            title=inventorydb.Title(request.form['job_title'], request.form['department'], request.form['access_level'])
+            inventorydb.db.session.add(title)
+            inventorydb.db.session.commit()
+            flash('Title successfully added')
+
     return render_template('addtitle.html')
 
 
@@ -378,17 +413,22 @@ def updatetitle():
     if request.method == 'POST':
 
         id = request.form["job_title"]
-        title=inventorydb.Title.query.get(id)
+
+        if not request.form['job_title'] or not request.form['department'] or not request.form['access_level']:
+            flash('Error: all fields are required')
+
+        else:     
+
+            title=inventorydb.Title.query.get(id)
         
-        #title.job_title = request.form['job_title']
-        title.department = request.form['department']
-        title.access_level = int(request.form['access_level'])
+            title.department = request.form['department']
+            title.access_level = int(request.form['access_level'])
 
-        inventorydb.db.session.commit()
+            inventorydb.db.session.commit()
 
-        return redirect(url_for('viewtitles'))
+            return redirect(url_for('viewtitles'))
 
-    return render_template('updatetitle.html')
+    return render_template('updatetitle.html', query=inventorydb.Title.query.get(id))
 
 
     job_title = db.Column(db.String(50), primary_key=True)
@@ -441,9 +481,14 @@ def viewsuppliers():
 def addsupplier():
     if request.method == 'POST':
 
-        supplier = inventorydb.Supplier(request.form['name'], request.form['phone'], request.form['email'], request.form['comments'])
-        inventorydb.db.session.add(supplier)
-        inventorydb.db.session.commit()
+        if not request.form['name'] or not request.form['phone'] or not request.form['email']:
+            flash('Error: name, phone and email fields are required')
+
+        else:     
+            supplier = inventorydb.Supplier(request.form['name'], request.form['phone'], request.form['email'], request.form['comments'])
+            inventorydb.db.session.add(supplier)
+            inventorydb.db.session.commit()
+            flash('Supplier successfully added')
 
     return render_template('addsupplier.html')
 
@@ -466,18 +511,24 @@ def updatesupplier():
     if request.method == 'POST':
 
         id = request.form["supplier_id"]
-        supplier=inventorydb.Supplier.query.get(id)
+
+        if not request.form['name'] or not request.form['phone'] or not request.form['email']:
+            flash('Error: name, phone and email fields are required')
+
+        else:     
+ 
+            supplier=inventorydb.Supplier.query.get(id)
         
-        supplier.name = request.form['name']
-        supplier.phone = request.form['phone']
-        supplier.email = (request.form['email'])
-        supplier.comments = (request.form['comments'])
+            supplier.name = request.form['name']
+            supplier.phone = request.form['phone']
+            supplier.email = (request.form['email'])
+            supplier.comments = (request.form['comments'])
 
-        inventorydb.db.session.commit()
+            inventorydb.db.session.commit()
 
-        return redirect(url_for('viewsuppliers'))
+            return redirect(url_for('viewsuppliers'))
 
-    return render_template('updatesupplier.html')
+    return render_template('updatesupplier.html', query=inventorydb.Supplier.query.get(id))
 
 
 @app.route('/deletesupplier', methods=['GET', 'POST'])
@@ -514,10 +565,15 @@ def viewcategories():
 @login_required
 def addcategory():
     if request.method == 'POST':
+        if not request.form['name'] or not request.form['description']:
+            flash('Error: all fields are required')
 
-        category = inventorydb.Category(request.form['name'], request.form['description'])
-        inventorydb.db.session.add(category)
-        inventorydb.db.session.commit()
+        else:    
+
+            category = inventorydb.Category(request.form['name'], request.form['description'])
+            inventorydb.db.session.add(category)
+            inventorydb.db.session.commit()
+            flash('Supplier successfully added')
 
     return render_template('addcategory.html')
 
@@ -553,18 +609,23 @@ def selectcategory():
 @login_required
 def updatecategory():
     if request.method == 'POST':
-
         id = request.form["category_id"]
-        category=inventorydb.Category.query.get(id)
+        if not request.form['name'] or not request.form['description']:
+            flash('Error: all fields are required')
+
+        else:    
+
+
+            category=inventorydb.Category.query.get(id)
         
-        category.name = request.form['name']
-        category.description = request.form['description']
+            category.name = request.form['name']
+            category.description = request.form['description']
 
-        inventorydb.db.session.commit()
+            inventorydb.db.session.commit()
 
-        return redirect(url_for('viewcategories'))
+            return redirect(url_for('viewcategories'))
 
-    return render_template('updatecategory.html')
+    return render_template('updatecategory.html', query=inventorydb.Category.query.get(id))
 
 
 

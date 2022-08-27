@@ -25,7 +25,7 @@
                 <tr>
                     <td>
                         <input type="text" readonly name="job_title" value="{{ query.job_title }}" />
-                    </td>    
+                    </td>
                     <!--<td>
                         <input type="text" name="job_title" value="{{ query.job_title }}" />
                     </td>-->
@@ -42,6 +42,15 @@
         </table>
         <input type="submit" value="Submit" />
     </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
 </body>
 </html>
 

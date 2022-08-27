@@ -7,6 +7,13 @@
 </head>
 <body>
     <h3>Employee List</h3>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <table border="2" cellpadding="5">
         <thead>
             <tr>

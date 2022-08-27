@@ -33,8 +33,8 @@
                 <td>{{ item.item_id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.unit_cost }}</td>
-                <td>{{ item.sale_price }}</td>
+                <td>$ {{ '%0.2f' |format (item.unit_cost|float) }}</td> <!-- format from https://stackoverflow.com/questions/46144767/how-to-format-a-float-number-in-python-flask-and-jinja-->
+                <td>$ {{ '%0.2f' |format (item.sale_price|float) }}</td>
                 <td>{{ item.units_in_stock }}</td>
                 <td>{{ item.expiration_date }}</td>
                 <td>{{ item.supplier_id }}</td>

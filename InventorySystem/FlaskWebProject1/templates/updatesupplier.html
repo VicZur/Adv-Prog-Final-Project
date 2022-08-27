@@ -33,10 +33,10 @@
                     </td>
                     <td>
                         <input type="text" name="phone" value="{{ query.phone }}" />
-                    </td>                    
+                    </td>
                     <td>
                         <input type="text" name="email" value="{{ query.email }}" />
-                    </td>                    
+                    </td>
                     <td>
                         <input type="text" name="comments" value="{{ query.comments }}" />
                     </td>
@@ -47,6 +47,15 @@
         </table>
         <input type="submit" value="Submit" />
     </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
 </body>
 </html>
 
