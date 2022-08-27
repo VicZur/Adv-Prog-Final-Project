@@ -22,13 +22,6 @@ wsgi_app = app.wsgi_app
 def index():
     return redirect(url_for('login'))
 
-#@app.route('/')
-#def login():
-#    return render_template('login.html')
-
-#@app.route('/')
-#def index():
-#    return redirect(url_for('login'))
 
 
 #decorator for access levels code from https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
@@ -61,12 +54,8 @@ def login():
             currenttitleid = currentjobtitle.emp_job_title
             currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
-            if currentaccesslevel == 3:
-                return redirect(url_for('access3menu'))
-            elif currentaccesslevel == 2:
-                return redirect(url_for('access2menu'))
-            else:
-                return redirect(url_for('access1menu'))
+            return redirect(url_for('nav' , accesslevel=currentaccesslevel))
+
 
         else:
             flash('Invalid Login')
@@ -84,42 +73,19 @@ def logout():
 
 
 
-
-@app.route('/access1menu')
+@app.route('/nav')
 @login_required
-def access1menu():
+def nav():
 
     currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
     currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    currenttitleid = currenttitle.emp_job_title
+    currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
+
     message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
     flash(message)
 
-    return render_template('access1menu.html')
-
-@app.route('/access2menu')
-@login_required
-def access2menu():
-
-    currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
-    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
-    message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
-    flash(message)
-
-    return render_template('access2menu.html')
-
-@app.route('/access3menu')
-@login_required
-def access3menu():
-
-    currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
-    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
-    message = 'Logged in as ' + currenttitle.emp_job_title + ' ' + currentemp.first_name
-    flash(message)
-
-    return render_template('access3menu.html')
-
-
-
+    return render_template('nav.html', accesslevel=currentaccesslevel)
 
 
 
@@ -274,11 +240,12 @@ def viewemployee():
 @login_required
 def selectemployee():
 
+
+
     if request.method == 'POST':
         id = request.form["emp_id"]
 
         if 'update' in request.form:
-
             return render_template('updateemployee.html', titles = inventorydb.Title.query.all(),
                                                                                           employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                                                          ,inventorydb.Title.job_title)
@@ -286,12 +253,26 @@ def selectemployee():
                                                                                          .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
             
         elif 'delete' in request.form:
-             return render_template('deleteemployee.html', titles = inventorydb.Title.query.all(),
+
+            if current_user.emp_id == int(id):
+                message = "Error: Cannot delete current user"  
+                flash(message)
+                return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
+
+            elif current_user.emp_id == 1:
+                message = "Error: Cannot delete the admin user"  
+                flash(message)
+                return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
+
+            else:
+                return render_template('deleteemployee.html', titles = inventorydb.Title.query.all(),
                                                                                           employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                                                          ,inventorydb.Title.job_title)
                                                                                          .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
                                                                                          .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+          
             
+
 
         #WORKS return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id) 
 
@@ -344,14 +325,14 @@ def updateemployee():
 @login_required
 def deleteemployee():
 
+    id = request.form["emp_id"]
+    
     if request.method == 'POST':
-        id = request.form["emp_id"]
-
         try:
             inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
             inventorydb.db.session.commit()
         except:
-            #NEED TO ADD AN ERROR MESSAGE HERE
+            message = 'Error: unable to delete the employee'
             return render_template('deleteemployee.html')
 
     return redirect(url_for('viewemployee'))

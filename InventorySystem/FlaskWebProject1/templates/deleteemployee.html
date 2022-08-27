@@ -62,6 +62,14 @@
     </form>
 
 
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
 
     <!--<form action="/deleteemployee" method="post">
         Employee Id <input type="number" name="emp_id" placeholder="Employee ID" />
