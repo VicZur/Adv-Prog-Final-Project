@@ -32,26 +32,12 @@
                     <td>
                         <input type="text" readonly name="emp_id" value="{{ emp.emp_id }}" />
                     </td>
-                    <td>
-                        <input type="text" name="first_name" value="{{ emp.first_name }}" />
-                    </td>
-                    <td>
-                        <input type="text" name="last_name" value="{{ emp.last_name }}" />
-                    </td>
-                    <td>
-                        <input type="text" name="pps_number" value="{{ emp.pps_number }}" />
-                    </td>
-                    <td>
-                        <input type="date" name="dob" value="{{ emp.dob }}" />
-                    </td>
-                    <td>
-                        <input type="date" name="hire_date" value="{{ emp.hire_date }}" />
-                    </td>
-                    <td>
-                        <input type="text" readonly name="title" value="{{ emp.job_title }}" />
-
-                    </td>
-
+                    <td>{{ emp.first_name }}</td>
+                    <td>{{ emp.last_name }}</td>
+                    <td>{{ emp.pps_number }}</td>
+                    <td>{{ emp.dob }}</td>
+                    <td>{{ emp.hire_date }}</td>
+                    <td>{{ emp.job_title }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -71,11 +57,6 @@
     {% endif %}
     {% endwith %}
 
-
-    <!--<form action="/deleteemployee" method="post">
-        Employee Id <input type="number" name="emp_id" placeholder="Employee ID" />
-        <input type="submit" value="Submit" />
-    </form>-->
 
 </body>
 </html>

@@ -8,9 +8,13 @@
 <body>
     <h3>Item List</h3>
 
-    <a href="/selectitem">Update Item</a>
-    <a href="/deleteitem">Delete Item</a>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
     <table border="2" cellpadding="5">
         <thead>

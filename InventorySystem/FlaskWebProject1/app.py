@@ -140,28 +140,107 @@ def viewitem():
 @login_required
 @requires_access_level(2)
 def deleteitem():
-
+    
+    id = request.form["item_id"]
+    
     if request.method == 'POST':
-        id = request.form["item_id"]
- 
-        inventorydb.db.session.delete(inventorydb.Item.query.filter_by(item_id=id).one())
-        inventorydb.db.session.commit()
-        return render_template('viewitem.html', query=inventorydb.Item.query.all())
 
-    return render_template('deleteitem.html')
+        if 'delete' in request.form:
+
+            try:
+                inventorydb.db.session.delete(inventorydb.Item.query.filter_by(item_id=id).one())
+
+                inventorydb.db.session.commit()
+            except:
+                message = 'Error: unable to delete the item'
+                flash(message)
+                return render_template('deleteitem.html', query=inventorydb.Item.query.all())
+
+        else:
+            return render_template('viewitem.html', query=inventorydb.Item.query.all()) 
+
+    return redirect(url_for('viewitem', message='Item successfully deleted'))
+
 
 
 @app.route('/selectitem', methods=['GET', 'POST'])
 @login_required
-@requires_access_level(2)
+@requires_access_level(1)
 def selectitem():
+
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    currenttitleid = currenttitle.emp_job_title
+    currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
     if request.method == 'POST':
 
         id = request.form["item_id"]
-        return render_template('updateitem.html', query=inventorydb.Item.query.get(id), suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
 
-    return render_template('selectitem.html', items=inventorydb.Item.query.all())
+        if request.method == 'POST':
+
+            if 'update' in request.form:
+                if request.form["item_id"] == "no_id":
+                    flash('Please select an item')
+                    return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel)
+                else:
+                    return render_template('updateitem.html', query=inventorydb.Item.query.get(id), suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
+
+            elif 'delete' in request.form:
+                if request.form["item_id"] == "no_id":
+                    flash('Please select an item')
+                    return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel)
+
+                else:
+                    return render_template('deleteitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.item_id==id).all())
+
+            else: #search item
+                if request.form["item_id"] != "no_id": #search by id provided
+                    return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.item_id==id).all())
+                else: #search by something other than item ID
+
+
+                    if request.form["name"] != "":
+                        #https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
+                        #used for case insensitve & fuzze match matching assistance
+                        query=inventorydb.Item.query.filter(inventorydb.Item.name.ilike(f'%{request.form["name"]}%')).first()
+                        if not query:
+                            flash('No items matched your search. View all items below:')
+                            return render_template('viewitem.html', query=inventorydb.Item.query.order_by(inventorydb.Item.name).all())
+                        else:
+                            return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.name.ilike(f'%{request.form["name"]}%')).order_by(inventorydb.Item.name).all())
+                    elif request.form["max_inventory_level"] != "":
+                        query=inventorydb.Item.query.filter(inventorydb.Item.units_in_stock <= request.form["max_inventory_level"]).first()
+                        if not query:
+                            flash('No items matched your search. View all items below:')
+                            return render_template('viewitem.html', query=inventorydb.Item.query.order_by(inventorydb.Item.units_in_stock).all())
+                        else:
+                            return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.units_in_stock <= request.form["max_inventory_level"]).order_by(inventorydb.Item.units_in_stock).all())
+                    
+                    elif request.form['min_inventory_level'] != "":
+                        query=inventorydb.Item.query.filter(inventorydb.Item.units_in_stock >= request.form["min_inventory_level"]).first()
+                        if not query:
+                            flash('No items matched your search. View all items below:')
+                            return render_template('viewitem.html', query=inventorydb.Item.query.order_by(inventorydb.Item.units_in_stock.desc()).all())
+                        else:    
+                            return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.units_in_stock >= request.form["min_inventory_level"]).order_by(inventorydb.Item.units_in_stock.desc()).all())
+                    
+                    elif request.form['expiration_date'] != "":
+                        query=inventorydb.Item.query.filter(inventorydb.Item.expiration_date <= request.form["expiration_date"]).first()
+                        if not query:
+                            flash('No items matched your search. View all items below:')
+                            return render_template('viewitem.html', query=inventorydb.Item.query.order_by(inventorydb.Item.expiration_date).all())
+
+                        else:
+                            return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.expiration_date <= request.form["expiration_date"]).order_by(inventorydb.Item.expiration_date).all())
+                   
+                    elif request.form['category_id'] != "category_id":
+                        return render_template('viewitem.html', query=inventorydb.Item.query.filter(inventorydb.Item.category_id == int(request.form["category_id"])).all())
+
+                    else:
+                        flash('Please enter a field')
+                        return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel)
+
+    return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel, categories=inventorydb.Category.query.all())
 
 
 
@@ -272,7 +351,7 @@ def selectemployee():
                 flash(message)
                 return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 
-            elif current_user.emp_id == 1:
+            elif id == 1:
                 message = "Error: Cannot delete the admin user"  
                 flash(message)
                 return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())

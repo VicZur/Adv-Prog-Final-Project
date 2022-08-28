@@ -14,14 +14,42 @@
 
         <label for="item_id">Item</label><br />
         <select name="item_id" placeholder="Item">
-
+            <option value="no_id">Select Item ID</option>
             {% for item in items %}
             <option value="{{ item.item_id }}">{{ item.item_id }} {{ item.name }}</option>
             {% endfor %}
         </select>
 
-        <input type="submit" value="Submit" />
+        <input type="submit" name="search" value="View" />
+        {% if accesslevel >= 2%}
+        <input type="submit" name="update" value="Update" />
+        <input type="submit" name="delete" value="Delete" />
+        {% endif %}
+
+        <br />
+        Or search by:
+        <br />
+        <input type="text" name="name" placeholder="Name" />
+        <input type="text" name="max_inventory_level" placeholder="Max Inventory Level" />
+        <input type="text" name="min_inventory_level" placeholder="Min Inventory Level" />
+        <input type="date" name="expiration_date" placeholder="Before Expiration Date" />
+        <select name="category_id" placeholder="Category">
+            <option value="category_id">Select Category</option>
+            {% for category in categories %}
+            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" name="search" value="Search" />
     </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
 </body>
 </html>
