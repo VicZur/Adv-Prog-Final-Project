@@ -3,7 +3,7 @@ from inventorydb import db, app
 from flask import Flask, request, flash, url_for, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-from datetime import timedelta
+from datetime import timedelta, date
 import createtestdata
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user #https://flask-login.readthedocs.io/en/latest/
 from functools import wraps #https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
@@ -42,7 +42,7 @@ def requires_access_level(access_level):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date='').one()
             currenttitleid = currentjobtitle.emp_job_title
             currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
@@ -68,7 +68,7 @@ def login():
         if inventorydb.Employee.query.get(id):
             login_user(inventorydb.Employee.query.get(id))
 
-            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+            currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date="").one()
             currenttitleid = currentjobtitle.emp_job_title
             currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
@@ -96,7 +96,7 @@ def logout():
 def nav():
 
     currentemp=inventorydb.Employee.query.filter_by(emp_id=(current_user.emp_id)).one()
-    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date='').one()
     currenttitleid = currenttitle.emp_job_title
     currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
@@ -198,7 +198,7 @@ def deleteitem():
 @requires_access_level(1)
 def selectitem():
 
-    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date='').one()
     currenttitleid = currenttitle.emp_job_title
     currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
@@ -346,7 +346,7 @@ def viewemployee():
                                                employees=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                     ,inventorydb.Title.job_title, inventorydb.Title.access_level)
                                                     .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
-                                                    .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).all())
+                                                    .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.EmployeeTitle.end_date=="").all())
 
     
 
@@ -372,7 +372,7 @@ def selectemployee():
                                                                                           employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                                                          ,inventorydb.Title.job_title)
                                                                                          .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
-                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id, inventorydb.EmployeeTitle.end_date=="").all())
             
         elif 'delete' in request.form:
 
@@ -391,7 +391,7 @@ def selectemployee():
                                                                                           employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                                                          ,inventorydb.Title.job_title)
                                                                                          .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
-                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
+                                                                                         .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id, inventorydb.EmployeeTitle.end_date=="").all())
           
             
 
@@ -434,9 +434,13 @@ def updateemployee():
 
                 employee=inventorydb.Employee.query.get(id)
 
-                #this only works if the job_title field has been updated / didn't exist before
-                employeetitle = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], request.form['hire_date'], '')
-                inventorydb.db.session.add(employeetitle)
+                #get current job title entry
+                current_emp_title = inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == employee.emp_id, inventorydb.EmployeeTitle.end_date == "").first()
+                current_emp_title.end_date = date.today()
+                
+                #add new job title
+                new_emp_title = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], date.today(), '')
+                inventorydb.db.session.add(new_emp_title)
 
 
 
@@ -472,8 +476,16 @@ def deleteemployee():
 
         if 'delete' in request.form:
 
+
             try:
+
                 inventorydb.db.session.delete(inventorydb.Employee.query.filter_by(emp_id=id).one())
+
+                inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == id).delete()
+                #inventorydb.db.session.delete(inventorydb.EmployeeTitle).where(emp_title_id == id)
+                #inventorydb.db.session.query.filter(inventorydb.EmployeeTitle.emp_title_id == id).delete()
+                #inventorydb.db.session.delete(inventorydb.EmployeeTitle.query.filter_by(inventorydb.EmployeeTitle.emp_title_id == id).all())
+
                 inventorydb.db.session.commit()
             except:
                 message = 'Error: unable to delete the employee'
