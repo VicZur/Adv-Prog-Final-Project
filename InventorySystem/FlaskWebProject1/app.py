@@ -40,17 +40,17 @@ def index():
 def requires_access_level(access_level):
     def decorator(f):
         @wraps(f)
-        def decorated_function():
+        def decorated_function(*args, **kwargs):
             currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id)).one()
             currenttitleid = currentjobtitle.emp_job_title
             currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
 
-            if not session.get('emp_id'):
-                return render_template('noauth.html')
+            if not current_user.emp_id:
+                return render_template('login.html')
 
             elif not currentaccesslevel >= access_level:
                 return render_template('noauth.html')
-            return ()
+            return f(*args, **kwargs)
         return decorated_function
     return decorator
 
@@ -107,7 +107,7 @@ def nav():
 
 @app.route('/additem', methods=['GET', 'POST'])
 @login_required
-@requires_access_level(2)
+@requires_access_level(3)
 def additem():
 
     if request.method == 'POST':
