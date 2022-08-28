@@ -7,6 +7,7 @@ from datetime import timedelta
 import createtestdata
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user #https://flask-login.readthedocs.io/en/latest/
 from functools import wraps #https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
+import requests
 
 app.secret_key = 'key5'
 
@@ -104,6 +105,35 @@ def nav():
 
     return render_template('nav.html', accesslevel=currentaccesslevel)
 
+
+#https://api-ninjas.com/api/cocktail
+@app.route('/recommendation', methods=['GET', 'POST'])
+@login_required
+@requires_access_level(2)
+def recommendation():
+
+    if request.method == 'POST':
+        
+        if 'by_name' in request.form:
+            name = request.form['name']
+
+        elif 'by_date' in request.form:
+            name=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().name
+
+        api_url = 'https://api.api-ninjas.com/v1/cocktail?ingredients={}'.format(name)
+
+        response = requests.get(api_url, headers={'X-Api-Key': 'e6iZfcExID2SRfreoiuRjw==Al2MlWkq2AbiqHIC'})
+        
+        if response.status_code == requests.codes.ok and len(response.content) > 2:
+            return render_template('recommendation.html', cocktails=response.json(), name=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().name, date=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().expiration_date)
+        elif response.status_code == requests.codes.ok:
+            flash("No results, please try again")
+            return render_template('recommendation.html', name=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().name, date=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().expiration_date)
+        else:
+            flash("Error: please try again")
+            return render_template('recommendation.html', name=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().name, date=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().expiration_date)
+
+    return render_template('recommendation.html', name=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().name, date=inventorydb.Item.query.filter(inventorydb.Item.category_id != 12).order_by(inventorydb.Item.expiration_date).first().expiration_date)
 
 @app.route('/additem', methods=['GET', 'POST'])
 @login_required

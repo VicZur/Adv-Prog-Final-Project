@@ -71,6 +71,13 @@
     <a href="/selectcategory">Update Category</a>
     <a href="/deletecategory">Delete Category</a>
     {% endif %}
+
+    {% if accesslevel >= 2%}
+    <br />
+    <br />
+    <a href="/recommendation">View Recommendations</a>
+    {% endif %}
+
     <br />
     <br />
     <a href="/logout">Logout</a>

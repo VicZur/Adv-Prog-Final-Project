@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <form action="/recommendation" method="post">
+        <label for="name">See ideas by ingredient name(s)</label><br />
+        <input type="text" name="name" placeholder="Name" />
+        <input type="submit" name="by_name" value="Search" />
+        <br />
+        <label for="expiration_date">{{ name }} expries next, on {{ date }} </label>
+        <input type="submit" name="by_date" value="See Ideas" />
+
+
+
+    </form>
+
+
+
+
+    <!--formatting from https://stackoverflow.com/questions/46831044/using-jinja2-templates-to-display-json-->
+
+    {% for cocktail in cocktails %}
+    <p>Name: {{ cocktail.name }}</p>
+    Ingredients: <br />
+    {% for ingredient in cocktail.ingredients %}
+    {{ ingredient }}
+    <br />
+    {% endfor %}
+    <br />
+    Instructions: <br />
+    {{ cocktail.instructions }}
+
+    <br />
+    <br />
+    {% endfor %}
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</body>
+</html>
