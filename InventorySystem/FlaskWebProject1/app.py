@@ -137,7 +137,7 @@ def recommendation():
 
 @app.route('/additem', methods=['GET', 'POST'])
 @login_required
-@requires_access_level(3)
+@requires_access_level(2)
 def additem():
 
     if request.method == 'POST':
@@ -278,29 +278,41 @@ def selectitem():
 @login_required
 @requires_access_level(2)
 def updateitem():
+
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date='').one()
+    currenttitleid = currenttitle.emp_job_title
+    currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
+    
+
     if request.method == 'POST':
 
         id = request.form["item_id"]
-
-        if not request.form['name'] or not request.form['description'] or not request.form['unit_cost'] or not request.form['sale_price'] or not request.form['units_in_stock'] or not request.form['supplier_id'] or not request.form['category_id']:
-            flash('Error: all fields are required')
-
-        else:
-
-            item=inventorydb.Item.query.get(id)
         
-            item.name = request.form['name']
-            item.description = request.form['description']
-            item.unit_cost = float(request.form['unit_cost'])
-            item.sale_price = float(request.form['sale_price'])
-            item.units_in_stock = int(request.form['units_in_stock'])
-            item.expiration_date = request.form['expiration_date']
-            item.supplier_id = int(request.form['supplier_id'])
-            item.category_id = int(request.form['category_id'])
+        if 'update' in request.form:
 
-            inventorydb.db.session.commit()
+            if not request.form['name'] or not request.form['description'] or not request.form['unit_cost'] or not request.form['sale_price'] or not request.form['units_in_stock'] or not request.form['supplier_id'] or not request.form['category_id']:
+                flash('Error: all fields are required')
 
-            return redirect(url_for('viewitem'))
+            else:
+
+                item=inventorydb.Item.query.get(id)
+        
+                item.name = request.form['name']
+                item.description = request.form['description']
+                item.unit_cost = float(request.form['unit_cost'])
+                item.sale_price = float(request.form['sale_price'])
+                item.units_in_stock = int(request.form['units_in_stock'])
+                item.expiration_date = request.form['expiration_date']
+                item.supplier_id = int(request.form['supplier_id'])
+                item.category_id = int(request.form['category_id'])
+
+                inventorydb.db.session.commit()
+
+                return redirect(url_for('viewitem'))
+
+        else: #cancel button selected
+            return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel, categories=inventorydb.Category.query.all())
+
 
     return render_template('updateitem.html', query=inventorydb.Item.query.get(id), suppliers=inventorydb.Supplier.query.all(), categories=inventorydb.Category.query.all())
 
@@ -496,8 +508,7 @@ def deleteemployee():
             return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 
     return redirect(url_for('viewemployee', message='Employee successfully deleted'))
-    #return render_template('viewemployee.html')
-
+ 
 
 
 
@@ -536,8 +547,12 @@ def selecttitle():
     if request.method == 'POST':
 
         id = request.form["job_title"]
-        return render_template('updatetitle.html', query=inventorydb.Title.query.get(id))
 
+        if 'update' in request.form:
+            return render_template('updatetitle.html', query=inventorydb.Title.query.get(id))
+
+        elif 'delete' in request.form:
+            return render_template('deletetitle.html', query=inventorydb.Title.query.get(id))
     return render_template('selecttitle.html', titles=inventorydb.Title.query.all())
 
 
@@ -548,50 +563,55 @@ def updatetitle():
     if request.method == 'POST':
 
         id = request.form["job_title"]
-
-        if not request.form['job_title'] or not request.form['department'] or not request.form['access_level']:
-            flash('Error: all fields are required')
-
-        else:     
-
-            title=inventorydb.Title.query.get(id)
         
-            title.department = request.form['department']
-            title.access_level = int(request.form['access_level'])
+        if 'update' in request.form:
 
-            inventorydb.db.session.commit()
+            if not request.form['job_title'] or not request.form['department'] or not request.form['access_level']:
+                flash('Error: all fields are required')
 
-            return redirect(url_for('viewtitles'))
+            else:     
+
+                title=inventorydb.Title.query.get(id)
+        
+                title.department = request.form['department']
+                title.access_level = int(request.form['access_level'])
+
+                inventorydb.db.session.commit()
+
+                return redirect(url_for('viewtitles'))
+
+        else: #cancel button selected
+            return render_template('selecttitle.html', titles=inventorydb.Title.query.all())
 
     return render_template('updatetitle.html', query=inventorydb.Title.query.get(id))
 
-
-    job_title = db.Column(db.String(50), primary_key=True)
-    department = db.Column(db.String(50), nullable=False)
-    access_level = db.Column(db.Integer, nullable=False)
-    emp_title = db.relationship("EmployeeTitle", backref="emp_title", lazy="joined")
-
-    def __init__ (self, job_title, department, access_level):
-        self.job_title = job_title
-        self.department = department
-        self.access_level = access_level
 
 
 @app.route('/deletetitle', methods=['GET', 'POST'])
 @login_required
 @requires_access_level(3)
 def deletetitle():
+
+
     if request.method == 'POST':
+
+        
         id = request.form['job_title']
 
-        try:
-            inventorydb.db.session.delete(inventorydb.Title.query.filter_by(job_title=id).one())
-            inventorydb.db.session.commit()
-        except:
-            #NEED TO ADD AN ERROR MESSAGE HERE
-            return render_template('deletetitle.html')
+        if 'delete' in request.form:
 
-    return render_template('deletetitle.html')
+
+            try:
+                inventorydb.db.session.delete(inventorydb.Title.query.filter_by(job_title=id).one())
+                inventorydb.db.session.commit()
+            except:
+                flash('Error: Unable to delete the title')
+                return render_template('deletetitle.html')
+
+        else: #cancel was selected
+            return render_template('selecttitle.html', titles=inventorydb.Title.query.all())
+
+    return redirect(url_for('viewtitles', message='Title successfully deleted'))
 
 
 
@@ -640,7 +660,12 @@ def selectsupplier():
     if request.method == 'POST':
 
         id = request.form["supplier_id"]
-        return render_template('updatesupplier.html', query=inventorydb.Supplier.query.get(id))
+
+        if 'update' in request.form:
+            return render_template('updatesupplier.html', query=inventorydb.Supplier.query.get(id))
+
+        elif 'delete' in request.form:
+            return render_template('deletesupplier.html', query=inventorydb.Supplier.query.get(id))
 
     return render_template('selectsupplier.html', suppliers=inventorydb.Supplier.query.all())
 
@@ -653,21 +678,26 @@ def updatesupplier():
 
         id = request.form["supplier_id"]
 
-        if not request.form['name'] or not request.form['phone'] or not request.form['email']:
-            flash('Error: name, phone and email fields are required')
+        if 'update' in request.form:
 
-        else:     
+            if not request.form['name'] or not request.form['phone'] or not request.form['email']:
+                flash('Error: name, phone and email fields are required')
+
+            else:     
  
-            supplier=inventorydb.Supplier.query.get(id)
+                supplier=inventorydb.Supplier.query.get(id)
         
-            supplier.name = request.form['name']
-            supplier.phone = request.form['phone']
-            supplier.email = (request.form['email'])
-            supplier.comments = (request.form['comments'])
+                supplier.name = request.form['name']
+                supplier.phone = request.form['phone']
+                supplier.email = (request.form['email'])
+                supplier.comments = (request.form['comments'])
 
-            inventorydb.db.session.commit()
+                inventorydb.db.session.commit()
 
-            return redirect(url_for('viewsuppliers'))
+                return redirect(url_for('viewsuppliers'))
+
+        else: #cancel button selected
+            return render_template('selectsupplier.html', suppliers=inventorydb.Supplier.query.all())
 
     return render_template('updatesupplier.html', query=inventorydb.Supplier.query.get(id))
 
@@ -679,14 +709,19 @@ def deletesupplier():
     if request.method == 'POST':
         id = request.form['supplier_id']
 
-        try:
-            inventorydb.db.session.delete(inventorydb.Supplier.query.filter_by(supplier_id=id).one())
-            inventorydb.db.session.commit()
-        except:
-            #NEED TO ADD AN ERROR MESSAGE HERE
-            return render_template('deletesupplier.html')
+        if 'delete' in request.form:
+            try:
+                inventorydb.db.session.delete(inventorydb.Supplier.query.filter_by(supplier_id=id).one())
+                inventorydb.db.session.commit()
+            except:
+                flash('Error: Unable to delete the supplier')
+                return render_template('deletesupplier.html')
 
-    return render_template('deletesupplier.html')
+        else: #cancel was selected
+            return render_template('selectsupplier.html', suppliers=inventorydb.Supplier.query.all())
+
+
+    return redirect(url_for('viewsuppliers', message='Supplier successfully deleted'))
 
 
 
@@ -728,14 +763,20 @@ def deletecategory():
     if request.method == 'POST':
         id = request.form['category_id']
 
-        try:
-            inventorydb.db.session.delete(inventorydb.Category.query.filter_by(category_id=id).one())
-            inventorydb.db.session.commit()
-        except:
-            #NEED TO ADD AN ERROR MESSAGE HERE
-            return render_template('deletecategory.html')
+        if 'delete' in request.form:
 
-    return render_template('deletecategory.html')
+            try:
+                inventorydb.db.session.delete(inventorydb.Category.query.filter_by(category_id=id).one())
+                inventorydb.db.session.commit()
+            except:
+                flash("Error: Unable to delete category")
+                return render_template('deletecategory.html')
+
+        
+        else: #cancel was selected
+            return render_template('selectcategory.html', categories=inventorydb.Category.query.all())
+
+    return redirect(url_for('viewcategories', message='Category successfully deleted'))
 
 
 @app.route('/selectcategory', methods=['GET', 'POST'])
@@ -746,7 +787,12 @@ def selectcategory():
     if request.method == 'POST':
 
         id = request.form["category_id"]
-        return render_template('updatecategory.html', query=inventorydb.Category.query.get(id))
+
+        if 'update' in request.form:
+            return render_template('updatecategory.html', query=inventorydb.Category.query.get(id))
+
+        elif 'delete' in request.form:
+            return render_template('deletecategory.html', query=inventorydb.Category.query.get(id))
 
     return render_template('selectcategory.html', categories=inventorydb.Category.query.all())
 
@@ -757,20 +803,26 @@ def selectcategory():
 def updatecategory():
     if request.method == 'POST':
         id = request.form["category_id"]
-        if not request.form['name'] or not request.form['description']:
-            flash('Error: all fields are required')
 
-        else:    
+        if 'update' in request.form:
+            if not request.form['name'] or not request.form['description']:
+                flash('Error: all fields are required')
+
+            else:    
 
 
-            category=inventorydb.Category.query.get(id)
+                category=inventorydb.Category.query.get(id)
         
-            category.name = request.form['name']
-            category.description = request.form['description']
+                category.name = request.form['name']
+                category.description = request.form['description']
 
-            inventorydb.db.session.commit()
+                inventorydb.db.session.commit()
 
-            return redirect(url_for('viewcategories'))
+                return redirect(url_for('viewcategories'))
+
+
+        else: #cancel button selected
+            return render_template('selectcategory.html', categories=inventorydb.Category.query.all())
 
     return render_template('updatecategory.html', query=inventorydb.Category.query.get(id))
 

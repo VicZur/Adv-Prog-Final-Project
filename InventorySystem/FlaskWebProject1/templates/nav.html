@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"
 </head>
 <body>
     <h2>Welcome to Inventory System</h2>
@@ -42,9 +43,7 @@
     <a href="/viewtitles">View Titles</a>
     {% if accesslevel ==3 %}
     <a href="/addtitle">Add Title</a>
-    <a href="/selecttitle">Select Title</a>
-    <a href="/selecttitle">Update Title</a>
-    <a href="/deletetitle">Delete Title</a>
+    <a href="/selecttitle">Edit Title</a>
     {% endif %}
     {% endif %}
 
@@ -58,18 +57,14 @@
     <a href="/viewsuppliers">View Suppliers</a>
     {% if accesslevel >= 2%}
     <a href="/addsupplier">Add Supplier</a>
-    <a href="/selectsupplier">Select Supplier</a>
-    <a href="/selectsupplier">Update Supplier</a>
-    <a href="/deletesupplier">Delete Supplier</a>
+    <a href="/selectsupplier">Edit Supplier</a>
     {% endif %}
     <br />
     <br />
     <a href="/viewcategories">View Categories</a>
     {% if accesslevel >= 2%}
     <a href="/addcategory">Add Category</a>
-    <a href="/selectcategory">Select Category</a>
-    <a href="/selectcategory">Update Category</a>
-    <a href="/deletecategory">Delete Category</a>
+    <a href="/selectcategory">Edit Category</a>
     {% endif %}
 
     {% if accesslevel >= 2%}

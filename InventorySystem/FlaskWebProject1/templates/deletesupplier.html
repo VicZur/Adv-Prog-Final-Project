@@ -8,10 +8,45 @@
 <body>
     <h2>Remove Supplier from System</h2>
 
+    Are you sure you want to delete this supplier?
     <form action="/deletesupplier" method="post">
-        Supplier Id <input type="number" name="supplier_id" placeholder="Supplier ID" />
-        <input type="submit" value="Submit" />
+        <table border="2" cellpadding="5">
+            <thead>
+
+                <tr>
+                    <th>Supplier ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" readonly name="supplier_id" value="{{ query.supplier_id  }}" />
+                    </td>
+                    <td>{{ query.name }}</td>
+                    <td>{{ query.phone }}</td>
+                    <td>{{ query.email }}</td>
+                    <td>{{ query.comments }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="submit" name="delete" value="Delete" />
+        <input type="submit" name="cancel" value="Cancel" />
+
     </form>
 
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </body>
 </html>
