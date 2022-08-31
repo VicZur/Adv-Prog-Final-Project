@@ -4,14 +4,15 @@
 <head>
     <meta charset="utf-8" />
     <title>Update Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h3>Update Item</h3>
+    <h2>Update Item</h2>
     <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
         source for form & table together-->
 
     <form action="/updateitem" method="post">
-        <table border="2" cellpadding="5">
+        <table>
             <thead>
                 <tr>
                     <th>Item Id</th>

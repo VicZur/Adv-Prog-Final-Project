@@ -59,13 +59,21 @@ def requires_access_level(access_level):
 def load_user(emp_id):
     return inventorydb.Employee.query.get(emp_id)
 
+
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
 
-        id = request.form['username']   
+        #the employees first name in the system is their username
+        name = request.form['username']
 
-        if inventorydb.Employee.query.get(id):
+        #the password is the employee id number - based on current restaurant system best practices
+        id = request.form['password']   
+
+        if inventorydb.Employee.query.get(id) and inventorydb.Employee.query.get(id).first_name == name:
             login_user(inventorydb.Employee.query.get(id))
 
             currentjobtitle = inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date="").one()
@@ -171,6 +179,10 @@ def viewitem():
 @requires_access_level(2)
 def deleteitem():
     
+    currenttitle=inventorydb.EmployeeTitle.query.filter_by(emp_title_id=(current_user.emp_id), end_date='').one()
+    currenttitleid = currenttitle.emp_job_title
+    currentaccesslevel = (inventorydb.Title.query.filter_by(job_title=currenttitleid).one()).access_level
+
     id = request.form["item_id"]
     
     if request.method == 'POST':
@@ -187,7 +199,7 @@ def deleteitem():
                 return render_template('deleteitem.html', query=inventorydb.Item.query.all())
 
         else:
-            return render_template('viewitem.html', query=inventorydb.Item.query.all()) 
+            return render_template('selectitem.html', items=inventorydb.Item.query.all(), accesslevel=currentaccesslevel, categories=inventorydb.Category.query.all())
 
     return redirect(url_for('viewitem', message='Item successfully deleted'))
 

@@ -4,14 +4,15 @@
 <head>
     <meta charset="utf-8" />
     <title>Update Category</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h3>Update Category</h3>
+    <h2>Update Category</h2>
     <!-- https://stackoverflow.com/questions/5967564/form-inside-a-table#:~:text=You%20can%20have%20a%20form,row%20(allowing%20bulk%20updates).
         source for form & table together-->
 
     <form action="/updatecategory" method="post">
-        <table border="2" cellpadding="5">
+        <table>
             <thead>
 
                 <tr>

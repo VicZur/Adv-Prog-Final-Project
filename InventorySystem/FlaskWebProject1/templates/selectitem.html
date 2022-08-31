@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Select Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
 
@@ -25,22 +26,27 @@
         <input type="submit" name="update" value="Update" />
         <input type="submit" name="delete" value="Delete" />
         {% endif %}
-
         <br />
-        Or search by:
-        <br />
-        <input type="text" name="name" placeholder="Name" />
-        <input type="text" name="max_inventory_level" placeholder="Max Inventory Level" />
-        <input type="text" name="min_inventory_level" placeholder="Min Inventory Level" />
-        <input type="date" name="expiration_date" placeholder="Before Expiration Date" />
-        <select name="category_id" placeholder="Category">
-            <option value="category_id">Select Category</option>
-            {% for category in categories %}
-            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
-            {% endfor %}
-        </select>
 
-        <input type="submit" name="search" value="Search" />
+        <div class="move-down">
+
+            <p>Or search by:</p>
+            <br />
+            <input type="text" name="name" placeholder="Name" />
+            <input type="text" name="max_inventory_level" placeholder="Max Inventory Level" />
+            <input type="text" name="min_inventory_level" placeholder="Min Inventory Level" /><br />
+            <label for="expiration_date">Expiration Date</label><br />
+            <input class="add-date" type="date" name="expiration_date" placeholder="Before Expiration Date" /><br />
+            <select name="category_id" placeholder="Category">
+                <option value="category_id">Select Category</option>
+                {% for category in categories %}
+                <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" name="search" value="Search" />
+
+        </div>
     </form>
 
     {% with messages = get_flashed_messages() %}

@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title>View Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h3>Item List</h3>
+    <h2>Item List</h2>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -16,7 +17,7 @@
     {% endif %}
     {% endwith %}
 
-    <table border="2" cellpadding="5">
+    <table>
         <thead>
             <tr>
                 <th>Item Id</th>
@@ -33,7 +34,7 @@
 
         <tbody>
             {% for item in query %}
-            <tr>
+            <tr class="view-tables">
                 <td>{{ item.item_id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>

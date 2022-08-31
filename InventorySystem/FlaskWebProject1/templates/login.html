@@ -4,19 +4,18 @@
 <head>
     <meta charset="utf-8" />
     <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h2>Welcome to RESTAURANT NAME</h2>
-    <h3>Login</h3>
-    <form action="/login" method="post">
+    <h1>Welcome to The Barre Restaurant</h1>
+    <h2>Login</h2>
+    <form action="/login" method="post" class="login_form">
 
-        <label for="username">User Name</label><br />
-        <input type="text" name="username" placeholder="User Name" /><br />
+        <input class="login_form" type="text" name="username" placeholder="User Name" /><br />
 
-        <label for="password">Password</label><br />
-        <input type="text" name="password" placeholder="Password" /><br />
+        <input class="login_form" type="text" name="password" placeholder="Password" /><br />
 
-        <input type="submit" value="Login" />
+        <input class="login_form" type="submit" value="Login" />
 
     </form>
 

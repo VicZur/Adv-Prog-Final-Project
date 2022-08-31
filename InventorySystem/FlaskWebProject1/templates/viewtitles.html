@@ -3,31 +3,34 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>View Titles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h3>Titles</h3>
+    <h2>Titles</h2>
 
-    <table border="2" cellpadding="5">
-        <thead>
-            <tr>
-                <th>Job Title</th>
-                <th>Department</th>
-                <th>Access Level</th>
-            </tr>
-        </thead>
+    <div class="view-tables">
+        <table>
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Department</th>
+                    <th>Access Level</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for title in query %}
-            <tr>
-                <td>{{ title.job_title }}</td>
-                <td>{{ title.department }}</td>
-                <td>{{ title.access_level }}</td>
-            </tr>
-            {% endfor %}
+            <tbody>
+                {% for title in query %}
+                <tr class="view-tables">
+                    <td>{{ title.job_title }}</td>
+                    <td>{{ title.department }}</td>
+                    <td>{{ title.access_level }}</td>
+                </tr>
+                {% endfor %}
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>

@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>Delete Category</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h2>Remove Category</h2>
+    <h2>Delete Category</h2>
 
-    Are you sure you want to delete this category?
+    <h4>Are you sure you want to delete this category?</h4>
 
     <form action="/deletecategory" method="post">
         <table border="2" cellpadding="5">

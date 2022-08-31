@@ -1,8 +1,199 @@
 /*https://pythonhow.com/python-tutorial/flask/Adding-CSS-styling-to-your-website/*/
 
-body {
-    margin: 50;
-    padding: 50;
-    color: blue;
+* {
+    margin: 0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif
+}
 
+html, body {
+    height: 100%;
+}
+
+body {
+    text-align: center;
+}
+
+
+h2{
+    color: #404040;
+    margin-top: 2%;
+    margin-bottom: 0.5%;
+}
+
+h4 {
+    margin-bottom: -20px;
+    font-weight: 200;
+}
+
+
+input[type=text].login_form {
+    padding: 0.5%;
+    margin: 0.5%;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.60);
+    border: none;
+    border-radius: 10px;
+    width: 80%;
+}
+
+input[type=submit].login_form {
+    -webkit-appearance: none;
+    margin: 0.5%;
+    padding: 0.5%;
+    border: none;
+    background-color: #404040;
+    color: #fff;
+    font-weight: 600;
+    border-radius: .5%;
+    width: 80%;
+    border-radius: 10px;
+}
+
+input[type=submit]:hover {
+    background-color: #777;
+    cursor: pointer;
+}
+
+/*input{
+    width: 80%;
+}*/
+
+select {
+    width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+input[type=submit] {
+    -webkit-appearance: none;
+    margin: 0.5%;
+    padding: 0.5%;
+    border: none;
+    background-color: #404040;
+    color: #fff;
+    font-weight: 600;
+    border-radius: .5%;
+    width: 80%;
+    border-radius: 10px;
+}
+
+
+form{
+    display: inline-block;
+    width: 100%;
+    margin-top:2%;
+}
+
+table{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[type=text]{
+    width:80%;
+    margin-top: 0.5%;
+    height: 30px;
+    margin-bottom: 20px;
+}
+
+
+input[type=date] {
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.60);
+    border: none;
+    width: 100px;
+    margin-top: 0%;
+    height: 30px;
+}
+
+input[type=number] {
+    width: 80%;
+    margin-top: 0.5%;
+    height: 30px;
+    margin-bottom: 20px;
+}
+
+
+
+input[type=date].add-date {
+        width: 80%;
+    }
+
+label{
+    color: #777;
+    margin-top:1%;
+    font-size:9px;
+    display: inline-block
+}
+
+input[placeholder]{
+    text-align: center;
+}
+
+a {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    border: none;
+    background-color: #777;
+    color: #fff;
+    font-weight: 200;
+    width: 150px;
+    height: 40px;
+    border-radius: 3px;
+    padding-top: 10px;
+    text-decoration:none;
+    margin: 1%;
+}
+
+a:hover{
+    background-color: #404040;
+
+}
+
+h3.logout{
+    font-size: 50px;
+}
+
+.logout{
+    margin-top: 10%;
+}
+
+label.recs{
+    font-size: 14px;
+    color: #404040;
+}
+
+.move-down{
+    margin-top: 7%;
+}
+
+
+div.cocktails{
+    margin-top: 2px;
+    border-style: solid;
+    border-width:2px;
+    border-color: #777;
+}
+
+div.cocktails p{
+    margin-top: 7px;
+}
+
+tr th {
+    padding: 0;
+    color: #404040;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+.view-tables td{
+    padding: 0;
+    border-bottom-color:black;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
 }

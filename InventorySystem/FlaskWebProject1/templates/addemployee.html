@@ -4,29 +4,26 @@
 <head>
     <meta charset="utf-8" />
     <title>Add Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
 
-    <h2>Add Employee Page</h2>
+    <h2>Add Employee</h2>
 
     <form action="/addemployee" method="post">
 
-        <label for="first_name">First Name</label><br />
         <input type="text" name="first_name" placeholder="First Name" /><br />
 
-        <label for="last_name">Last Name</label><br />
         <input type="text" name="last_name" placeholder="Last Name" /><br />
 
-        <label for="pps_number">PPS Number</label><br />
         <input type="text" name="pps_number" placeholder="PPS Number" /> <br />
 
         <label for="dob">Date of Birth</label><br />
-        <input type="date" name="dob" placeholder="Date of Birth" /> <br />
+        <input class="add-date" type="date" name="dob" placeholder="Date of Birth" /> <br />
 
         <label for="hire_date">Hire Date</label><br />
-        <input type="date" name="hire_date" placeholder="Hire Date" /> <br />
+        <input class="add-date" type="date" name="hire_date" placeholder="Hire Date" /> <br />
 
-        <label for="job_title">Job Title</label><br />
         <select name="job_title" placeholder="Job Title">
 
             {% for title in jobtitles %}

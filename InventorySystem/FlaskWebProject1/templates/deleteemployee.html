@@ -4,12 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Delete Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
 
-    <h2>Remove Employee from System</h2>
+    <h2>Delete Employee from System</h2>
 
-    Are you sure you want to delete this employee?
+    <h4>Are you sure you want to delete this employee?</h4>
 
     <form action="/deleteemployee" method="post">
         <table border="2" cellpadding="5">

@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>View Suppliers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h3>Suppliers</h3>
+    <h2>Suppliers</h2>
 
-    <table border="2" cellpadding="5">
+    <table>
         <thead>
             <tr>
                 <th>Supplier ID</th>
@@ -21,7 +22,7 @@
 
         <tbody>
             {% for supplier in query %}
-            <tr>
+            <tr class="view-tables">
                 <td>{{ supplier.supplier_id }}</td>
                 <td>{{ supplier.name }}</td>
                 <td>{{ supplier.phone }}</td>

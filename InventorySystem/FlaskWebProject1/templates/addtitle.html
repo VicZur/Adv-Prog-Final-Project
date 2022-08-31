@@ -4,19 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <title>Add Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h2>Add Supplier</h2>
+    <h2>Add TItle</h2>
 
     <form action="/addtitle" method="post">
 
-        <label for="job_title">Job Title</label><br />
         <input type="text" name="job_title" placeholder="Job Title" /><br />
 
-        <label for="department">Department</label><br />
         <input type="text" name="department" placeholder="Department" /><br />
 
-        <label for="access_level">Access Level</label><br />
         <input type="text" name="access_level" placeholder="Access Level" /> <br />
 
         <input type="submit" value="Submit" />

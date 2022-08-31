@@ -4,29 +4,25 @@
 <head>
     <meta charset="utf-8" />
     <title>Add Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h2>Add Item Page</h2>
+    <h2>Add Item</h2>
 
     <form action="{{ request.path }}" method="post">
 
-        <label for="name">Name</label><br />
         <input type="text" name="name" placeholder="Name" /><br />
 
-        <label for="description">Description</label><br />
         <input type="text" name="description" placeholder="Description" /><br />
 
-        <label for="unit_cost">Unit Cost</label><br />
         <input type="number" min="0" step="any" name="unit_cost" placeholder="Unit Cost" /> <br />
 
-        <label for="sale_price">Sale Price</label><br />
         <input type="number" min="0" step="any" name="sale_price" placeholder="Sale Price" /> <br />
 
-        <label for="units_in_stock">Units In Stock</label><br />
         <input type="number" min="0" step="1" name="units_in_stock" placeholder="Units In Stock" /> <br />
 
         <label for="expiration_date">Expiration Date</label><br />
-        <input type="date" name="expiration_date" placeholder="Expiration Date" /><br />
+        <input class="add-date" type="date" name="expiration_date" placeholder="Expiration Date" /><br />
 
         <label for="supplier_id">Supplier ID</label><br />
         <select name="supplier_id" placeholder="Supplier ID">

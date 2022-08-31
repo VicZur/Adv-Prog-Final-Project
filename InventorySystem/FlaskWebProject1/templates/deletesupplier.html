@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>Delete Supplier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
     <h2>Remove Supplier from System</h2>
 
-    Are you sure you want to delete this supplier?
+    <h4>Are you sure you want to delete this supplier?</h4>
     <form action="/deletesupplier" method="post">
         <table border="2" cellpadding="5">
             <thead>

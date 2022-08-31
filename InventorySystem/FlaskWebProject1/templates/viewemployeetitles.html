@@ -3,11 +3,12 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>View Employee Titles</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-
-    <table border="2" cellpadding="5">
+    <h2>Employee Titles</h2>
+    <table>
         <thead>
             <tr>
                 <th>Employee ID</th>
@@ -19,12 +20,12 @@
 
         <tbody>
             {% for employee in query %}
-            <tr>
+            <tr class="view-tables">
                 <td>{{ employee.emp_title_id }}</td>
                 <td>{{ employee.emp_job_title }}</td>
                 <td>{{ employee.start_date }}</td>
                 <td>{{ employee.end_date }}</td>
-            </tr>
+            </trclass="view-tables">
             {% endfor %}
         </tbody>
     </table>

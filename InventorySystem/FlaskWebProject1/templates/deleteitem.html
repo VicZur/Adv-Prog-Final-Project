@@ -4,13 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <title>Delete Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
 
-    <h2>Remove Item from Inventory</h2>
+    <h2>Delete Item from Inventory</h2>
 
 
-    Are you sure you want to delete this Item?
+    <h4>Are you sure you want to delete this Item?</h4>
 
     <form action="/deleteitem" method="post">
         <table border="2" cellpadding="5">
