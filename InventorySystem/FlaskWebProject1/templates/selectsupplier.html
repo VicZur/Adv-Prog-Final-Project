@@ -14,7 +14,6 @@
         <label for="supplier_id">Supplier</label><br />
         <select name="supplier_id" placeholder="Supplier">
 
-            <!--drop down list to ensure user eslects valid supplier, options are all suppliers in sytem-->
             {% for supplier in suppliers %}
             <option value="{{ supplier.supplier_id }}">{{ supplier.supplier_id }} {{ supplier.name }}</option>
             {% endfor %}

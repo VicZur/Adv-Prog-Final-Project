@@ -14,7 +14,6 @@
         <label for="category_id">Category</label><br />
         <select name="category_id" placeholder="Category">
 
-            <!--drop down list to ensure user eslects valid category, options are all categories in sytem--> 
             {% for category in categories %}
             <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
             {% endfor %}

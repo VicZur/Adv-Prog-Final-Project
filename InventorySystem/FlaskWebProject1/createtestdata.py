@@ -9,6 +9,7 @@ def create_test_suppliers():
                 , inventorydb.Supplier('RestaurantStuff', '9876543210', 'reststuff@stuff.ie', '')]
 
     for supplier in suppliers:
+        #if not inventorydb.Supplier.query.filter_by(name=supplier).one(): #check for duplication of name for testing purposes only to ensure not continuously adding the same suppliers every time program is run
         inventorydb.db.session.add(supplier)
 
     inventorydb.db.session.commit()
@@ -53,7 +54,15 @@ def create_test_title():
 
 
 def create_test_employee():
-   
+    
+    #employees = [inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Server')
+    #            , inventorydb.Employee('John', 'Doe', '987654321B', '08-01-1988', '14-08-2022', 'Supervisor')
+    #            , inventorydb.Employee('TestAdmin', 'TestAdmin', '111222333C', '05-05-1995', '14-08-2022', 'Admin')]
+
+    #for employee in employees:
+    #    inventorydb.db.session.add(employee)
+    
+    #employee = inventorydb.Employee('Jane', 'Doe', '12345678A', '01-01-1990', '14-08-2022', 'Supervisor')
     employee1 = inventorydb.Employee('Admin', 'Admin', '111000222B', '08-08-1988', '08-08-2022','Admin')
     employee_title = inventorydb.EmployeeTitle(1, 'Admin', '08-08-2022', '')
 

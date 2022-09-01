@@ -24,8 +24,8 @@
         <label for="hire_date">Hire Date</label><br />
         <input class="add-date" type="date" name="hire_date" placeholder="Hire Date" /> <br />
 
-        <!--drop down list displaying all job titles currently in the system to allow the user to pick one in line with foerign key constraints-->
         <select name="job_title" placeholder="Job Title">
+
             {% for title in jobtitles %}
             <option value="{{ title.job_title }}">{{ title.job_title }}</option>
             {% endfor %}

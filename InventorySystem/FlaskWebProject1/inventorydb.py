@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 #https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
 
-#create employee table as per requirements document
+
 class Employee(db.Model):
     __tablename__ = "employee"
     emp_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -22,6 +22,7 @@ class Employee(db.Model):
     pps_number = db.Column(db.String(9), nullable=False)    
     dob = db.Column(db.String, nullable=False)
     hire_date = db.Column(db.String, nullable=False)
+    #job_title = db.relationship("Title", back_populates = "title")
     title = db.relationship("EmployeeTitle", uselist=False, cascade="all,delete", backref="employee_job_title", lazy="joined")
 
 
@@ -32,7 +33,6 @@ class Employee(db.Model):
         self.dob = dob
         self.hire_date = hire_date
 
-    #ensure employee can be used with flask login, "user" table requires the following
     #https://flask-login.readthedocs.io/en/latest/
 
     def is_authenticated(self):
@@ -48,7 +48,7 @@ class Employee(db.Model):
         return str(self.emp_id)
 
 
-#create title table
+
 class Title(db.Model):
 
     job_title = db.Column(db.String(50), primary_key=True)
@@ -62,7 +62,7 @@ class Title(db.Model):
         self.access_level = access_level
 
 
-#create EmployeeTitle table to enable many to many relationship in a normalized db schema, allows a record to be kept of employees previous job titles
+
 class EmployeeTitle(db.Model):
 
     __tablename__ = "employee_title"
@@ -81,8 +81,8 @@ class EmployeeTitle(db.Model):
         self.start_date = start_date
         self.end_date = end_date
 
+    #should this be Model or Table
 
-#Create Category table
 class Category(db.Model):
     category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -92,12 +92,11 @@ class Category(db.Model):
         self.name = name
         self.description = description
 
-
-#Create Supplier Table
 class Supplier(db.Model):
     supplier_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    #ADDRESS?!?!!? - sep table for this? connect to emp as well?
     email = db.Column(db.String(50), nullable=False)
     comments = db.Column(db.String(200), nullable=True)
 
@@ -107,16 +106,17 @@ class Supplier(db.Model):
         self.email = email
         self.comments = comments
 
-#Create item table
 class Item(db.Model):
     item_id  = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name  = db.Column(db.String(50), nullable=False)
+    name  = db.Column(db.String(50), nullable=False) #, unique=True)
     description = db.Column(db.Text, nullable=True)
     unit_cost  = db.Column(db.Numeric, nullable=False)
     sale_price  = db.Column(db.Numeric, nullable=False)
     units_in_stock  = db.Column(db.Integer, nullable=False)
-    expiration_date  = db.Column(db.String, nullable=True)
+    expiration_date  = db.Column(db.String, nullable=True) #put some kind of batch table to handle this?
     supplier_id = db.Column(db.Integer, nullable=False)
+   # supplier_id = db.Column(db.Integer, db.ForeignKey(Supplier.supplier_id), nullable=False)
+   # category_id = db.Column(db.Integer, db.ForeignKey(Category.category_id), nullable=False)
     category_id = db.Column(db.Integer, nullable=False)
 
     def __init__(self, name, description, unit_cost, sale_price, units_in_stock, expiration_date, supplier_id, category_id):

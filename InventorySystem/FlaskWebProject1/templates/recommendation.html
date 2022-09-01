@@ -28,22 +28,15 @@
     <a href="/nav">Home</a>
 
     <!--formatting from https://stackoverflow.com/questions/46831044/using-jinja2-templates-to-display-json-->
-    <!--loop to display all cocktails returned by the API-->
     {% for cocktail in cocktails %}
     <div class="cocktails">
-    
-        <!--display cocktail name-->
         <p>Name: {{ cocktail.name }}</p><br />
-
-        <!--display cocktail ingreedients-->
         Ingredients: <br />
         {% for ingredient in cocktail.ingredients %}
         {{ ingredient }}
         <br />
         {% endfor %}
         <br />
-
-        <!--discplay cocktail instructions-->
         Instructions: <br />
         {{ cocktail.instructions }}
 
