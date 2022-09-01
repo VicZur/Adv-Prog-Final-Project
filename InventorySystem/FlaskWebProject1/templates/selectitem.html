@@ -16,6 +16,7 @@
         <label for="item_id">Item</label><br />
         <select name="item_id" placeholder="Item">
             <option value="no_id">Select Item ID</option>
+            <!--drop down list to ensure user eslects valid item, options are all items in sytem-->
             {% for item in items %}
             <option value="{{ item.item_id }}">{{ item.item_id }} {{ item.name }}</option>
             {% endfor %}
@@ -47,6 +48,7 @@
             <input class="add-date" type="date" name="expiration_date" placeholder="Before Expiration Date" /><br />
             <select name="category_id" placeholder="Category">
                 <option value="category_id">Select Category</option>
+                <!--drop down list to ensure user eslects valid category, options are all categories in sytem-->
                 {% for category in categories %}
                 <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
                 {% endfor %}

@@ -25,6 +25,8 @@
 
             <tbody>
                 <tr>
+                    <!--readonly line but display the supplier ID for two reasons: 1. user can confirm deleting correct supplier,
+                     2. can be passed back to app.route function to correctly find the associated row-->
                     <td>
                         <input type="text" readonly name="supplier_id" value="{{ query.supplier_id  }}" />
                     </td>

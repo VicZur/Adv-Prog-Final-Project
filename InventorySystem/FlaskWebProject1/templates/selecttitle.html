@@ -14,6 +14,7 @@
         <label for="job_title">Job Title</label><br />
         <select name="job_title" placeholder="Job Title">
 
+            <!--drop down list to ensure user eslects valid title, options are all titles in sytem-->
             {% for title in titles %}
             <option value="{{ title.job_title }}">{{ title.job_title }}</option>
             {% endfor %}

@@ -30,6 +30,8 @@
             <tbody>
                 {% for emp in employee %}
                 <tr>
+                    <!--readonly line but display the emp ID for two reasons: 1. user can confirm deleting correct employee,
+                    2. can be passed back to app.route function to correctly find the associated row-->
                     <td>
                         <input type="text" readonly name="emp_id" value="{{ emp.emp_id }}" />
                     </td>
