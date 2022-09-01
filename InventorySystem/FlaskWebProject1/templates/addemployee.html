@@ -35,15 +35,23 @@
 
     </form>
 
-</body>
-
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
-{{ message }}
+    {{ message }}
     {% endfor %}
     {% endif %}
     {% endwith %}
+
+
+    <br />
+
+    <a href="/nav">Home</a>
+    <a href="/viewemployee">View Employees</a>
+
+
+</body>
+
 
 </html>
 

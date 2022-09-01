@@ -28,6 +28,14 @@
         {% endif %}
         <br />
 
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
         <div class="move-down">
 
             <p>Or search by:</p>
@@ -57,5 +65,7 @@
     {% endif %}
     {% endwith %}
 
+    <br />
+    <a href="/nav">Home</a>
 </body>
 </html>

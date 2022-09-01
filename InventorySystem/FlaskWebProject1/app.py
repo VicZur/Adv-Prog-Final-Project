@@ -379,8 +379,6 @@ def viewemployee():
 
 
 
-
-
 @app.route('/selectemployee', methods=['GET', 'POST'])
 @login_required
 @requires_access_level(3)
@@ -454,6 +452,9 @@ def updateemployee():
                                                                                          .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
        
 
+  
+
+
             else:
 
                 employee=inventorydb.Employee.query.get(id)
@@ -462,9 +463,10 @@ def updateemployee():
                 current_emp_title = inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == employee.emp_id, inventorydb.EmployeeTitle.end_date == "").first()
                 current_emp_title.end_date = date.today()
                 
-                #add new job title
-                new_emp_title = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], date.today(), '')
-                inventorydb.db.session.add(new_emp_title)
+                if request.form['job_title'] != current_emp_title.emp_job_title:
+                    #add new job title
+                    new_emp_title = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], date.today(), '')
+                    inventorydb.db.session.add(new_emp_title)
 
 
 
