@@ -26,7 +26,9 @@ h4 {
     font-weight: 200;
 }
 
+/*--------------------------------------------------------------------------*/
 
+/*LOGIN PAGE*/
 input[type=text].login_form {
     padding: 0.5%;
     margin: 0.5%;
@@ -58,14 +60,14 @@ input[type=submit].login_form {
     border-radius: 10px;
 }
 
+/*--------------------------------------------------------------------------*/
+/*Common form layouts*/
+
 input[type=submit]:hover {
     background-color: #777;
     cursor: pointer;
 }
 
-/*input{
-    width: 80%;
-}*/
 
 select {
     width: 80%;
@@ -87,7 +89,6 @@ input[type=submit] {
     width: 80%;
     border-radius: 10px;
 }
-
 
 form{
     display: inline-block;
@@ -180,6 +181,8 @@ label.recs{
     margin-top: 7%;
 }
 
+/*--------------------------------------------------------------------------*/
+/*Recommendations page layout*/
 
 div.cocktails{
     margin-top: 2px;

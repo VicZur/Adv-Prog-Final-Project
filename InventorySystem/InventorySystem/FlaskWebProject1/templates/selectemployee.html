@@ -3,27 +3,29 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Select Category</title>
+    <title>Select Employee</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
-    <h2>Select Category</h2>
 
-    <form action="/selectcategory" method="post">
+    <h2>Select Employee</h2>
 
-        <label for="category_id">Category</label><br />
-        <select name="category_id" placeholder="Category">
+    <form action="/selectemployee" method="post">
 
-            {% for category in categories %}
-            <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
+        <label for="emp_id">Employee</label><br />
+        <select name="emp_id" placeholder="Employee">
+
+            <option value="hidden" hidden="hidden">Select an Employee</option>
+            <!--drop down list to ensure user selects valid employee, options are all employees in sytem--> 
+            {% for emp in employees %}
+            <option value="{{ emp.emp_id }}">{{ emp.emp_id }} {{ emp.first_name }} {{ emp.last_name }}</option>
             {% endfor %}
         </select>
 
-
         <input type="submit" name="update" value="Update" />
         <input type="submit" name="delete" value="Delete" />
-
     </form>
+
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -36,5 +38,6 @@
 
     <br />
     <a href="/nav">Home</a>
+
 </body>
 </html>

@@ -3,27 +3,27 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Select Employee</title>
+    <title>Select Title</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
+    <h2>Select Title</h2>
 
-    <h2>Select Employee</h2>
+    <form action="/selecttitle" method="post">
 
-    <form action="/selectemployee" method="post">
+        <label for="job_title">Job Title</label><br />
+        <select name="job_title" placeholder="Job Title">
 
-        <label for="emp_id">Employee</label><br />
-        <select name="emp_id" placeholder="Employee">
-
-            {% for emp in employees %}
-            <option value="{{ emp.emp_id }}">{{ emp.emp_id }} {{ emp.first_name }} {{ emp.last_name }}</option>
+            <!--drop down list to ensure user eslects valid title, options are all titles in sytem-->
+            {% for title in titles %}
+            <option value="{{ title.job_title }}">{{ title.job_title }}</option>
             {% endfor %}
         </select>
 
         <input type="submit" name="update" value="Update" />
         <input type="submit" name="delete" value="Delete" />
-    </form>
 
+    </form>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -33,9 +33,7 @@
     {% endif %}
     {% endwith %}
 
-
     <br />
     <a href="/nav">Home</a>
-
 </body>
 </html>

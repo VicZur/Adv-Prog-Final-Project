@@ -33,6 +33,8 @@
             <tbody>
                 {% for item in query %}
                 <tr>
+                    <!--readonly line but display the item ID for two reasons: 1. user can confirm deleting correct item,
+                    2. can be passed back to app.route function to correctly find the associated row-->
                     <td>
                         <input type="text" readonly name="item_id" value="{{ item.item_id }}" />
                     </td>

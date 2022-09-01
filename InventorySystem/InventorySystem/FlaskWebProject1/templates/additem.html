@@ -24,19 +24,22 @@
         <label for="expiration_date">Expiration Date</label><br />
         <input class="add-date" type="date" name="expiration_date" placeholder="Expiration Date" /><br />
 
+        <!--drop down list displaying all suppliers currently in the system to allow the user to pick one in line with foerign key constraints-->
         <label for="supplier_id">Supplier ID</label><br />
         <select name="supplier_id" placeholder="Supplier ID">
             <option value="" hidden="hidden">Select ID</option>
             {% for supplier in suppliers %}
+            <!--display id AND name for user convenience-->
             <option value="{{ supplier.supplier_id }}">{{ supplier.supplier_id }} {{ supplier.name }}</option>
             {% endfor %}
-
         </select><br />
 
+        <!--drop down list displaying all categories currently in the system to allow the user to pick one in line with foerign key constraints-->
         <label for="category_id">Category ID</label><br />
         <select name="category_id" placeholder="Category ID">
             <option value="" hidden="hidden">Select ID</option>
             {% for category in categories %}
+            <!--display id AND name for user convenience-->
             <option value="{{ category.category_id }}">{{ category.category_id }} {{ category.name }}</option>
             {% endfor %}
 
