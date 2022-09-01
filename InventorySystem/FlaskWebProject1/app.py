@@ -366,7 +366,7 @@ def viewemployee():
     #and https://stackoverflow.com/questions/46657757/basequery-object-not-callable-inside-a-flask-app-using-sqlalchemy
     #and https://stackoverflow.com/questions/60444153/flask-sql-alchemy-join-multiple-tables
 
-    return render_template('viewemployee.html',
+    return render_template('viewemployee.html', 
                                                employees=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                     ,inventorydb.Title.job_title, inventorydb.Title.access_level)
                                                     .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
@@ -390,7 +390,13 @@ def selectemployee():
         id = request.form["emp_id"]
 
         if 'update' in request.form:
-            return render_template('updateemployee.html', titles = inventorydb.Title.query.all(),
+
+            if int(id) == 1:
+                message = "Error: Cannot update the admin user"  
+                flash(message)
+                return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
+            else:
+                return render_template('updateemployee.html', titles = inventorydb.Title.query.all(),
                                                                                           employee=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
                                                                                          ,inventorydb.Title.job_title)
                                                                                          .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
@@ -417,18 +423,6 @@ def selectemployee():
           
             
 
-
-        #WORKS return render_template('updateemployee.html', query=inventorydb.Employee.query.get(id) 
-
-
-
-
-
-                               #, query=inventorydb.db.session.query(inventorydb.Employee.emp_id, inventorydb.Employee.first_name, inventorydb.Employee.last_name, inventorydb.Employee.pps_number, inventorydb.Employee.dob, inventorydb.Employee.hire_date                                                                                  
-                               #                     ,inventorydb.Title.job_title, inventorydb.Title.access_level)
-                               #                     .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
-                               #                     .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter_by(inventorydb.Employee.emp_id==id).fisrt())
-       
     return render_template('selectemployee.html', employees=inventorydb.Employee.query.all())
 
 
@@ -450,10 +444,7 @@ def updateemployee():
                                                                                          ,inventorydb.Title.job_title)
                                                                                          .outerjoin(inventorydb.EmployeeTitle, inventorydb.Employee.emp_id==inventorydb.EmployeeTitle.emp_title_id)
                                                                                          .outerjoin(inventorydb.Title, inventorydb.Title.job_title==inventorydb.EmployeeTitle.emp_job_title).filter(inventorydb.Employee.emp_id==id).all())
-       
-
-  
-
+            
 
             else:
 
@@ -462,24 +453,39 @@ def updateemployee():
                 #get current job title entry
                 current_emp_title = inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == employee.emp_id, inventorydb.EmployeeTitle.end_date == "").first()
                 current_emp_title.end_date = date.today()
+                all_emp_titles = inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == employee.emp_id).all()
+
+                emp_title_already_exists = False;
+
+                for title in all_emp_titles:
+                    if request.form['job_title'] == title.emp_job_title:
+                        emp_title_already_exists = True
+                        existing_title = title.emp_job_title
+                        break
+
                 
                 if request.form['job_title'] != current_emp_title.emp_job_title:
+                    if emp_title_already_exists == True:
+                        inventorydb.EmployeeTitle.query.filter(inventorydb.EmployeeTitle.emp_title_id == employee.emp_id, inventorydb.EmployeeTitle.emp_job_title == existing_title).first().end_date = ""
+                    else:
                     #add new job title
-                    new_emp_title = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], date.today(), '')
-                    inventorydb.db.session.add(new_emp_title)
+                        new_emp_title = inventorydb.EmployeeTitle(employee.emp_id, request.form['job_title'], date.today(), "")
+                        inventorydb.db.session.add(new_emp_title)
+                    
 
 
 
-                #title = employee.title
 
-                #jobtitle=inventorydb.Employee.query.get(title)
+
+
+
+
 
                 employee.first_name = request.form['first_name']
                 employee.last_name = request.form['last_name']
                 employee.pps_number = (request.form['pps_number'])
                 employee.dob = (request.form['dob'])
                 employee.hire_date = (request.form['hire_date'])
-                #employee.title = request.form['job_title']
 
                 inventorydb.db.session.commit()
 
@@ -634,7 +640,7 @@ def deletetitle():
 @login_required
 @requires_access_level(2)
 def viewemployeetitles():
-    return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.all())
+    return render_template('viewemployeetitles.html', query=inventorydb.EmployeeTitle.query.order_by(inventorydb.EmployeeTitle.emp_title_id).all())
 
 
 
