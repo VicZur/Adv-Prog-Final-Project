@@ -33,6 +33,7 @@ def before_request():
 def index():
     return redirect(url_for('login')) #want to make this nav instead???
 
+#trying to fix error
 
 
 #decorator for access levels code from https://blog.teclado.com/learn-python-defining-user-access-roles-in-flask/
